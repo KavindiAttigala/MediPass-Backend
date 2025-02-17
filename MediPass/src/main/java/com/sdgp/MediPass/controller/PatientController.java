@@ -1,4 +1,4 @@
-package main.java.com.sdgp.MediPass.controller;
+package com.sdgp.MediPass.controller;
 
 public class PatientController {
 }
