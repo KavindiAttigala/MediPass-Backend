@@ -1,14 +1,12 @@
 package com.sdgp.MediPass.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.annotation.processing.Generated;
 
 @Entity
+@Table(name="Patient")
 public class Patient {
     @Id
     @GeneratedValue(generator = "IdGenerator")
