@@ -11,7 +11,6 @@ import javax.annotation.processing.Generated;
 @Entity
 public class Patient {
     @Id
-
     @GeneratedValue(generator = "IdGenerator")
     @GenericGenerator(name = "IdGenerator", strategy = "com.sdgp.MediPass.util.IdGenerator")
     private long MediId;
@@ -31,6 +30,10 @@ public class Patient {
         this.nic = nic;
         this.contactNumber = contactNumber;
         this.password = password;
+    }
+
+    public Patient() {
+
     }
 
     public long getMediId() {
