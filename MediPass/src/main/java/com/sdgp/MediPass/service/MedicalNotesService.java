@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,7 +26,7 @@ public class MedicalNotesService {
     private final PatientRepository patientRepo;
     private final String uploadDirectory = "medipass/medicalNotes/";
 
-    public MedicalNotes saveNotes(Long mediId, String textContent, MultipartFile file) throws IOException {
+    public MedicalNotes saveNotes(Long mediId, String docName, String specialization, LocalDate date, String textContent, MultipartFile file) throws IOException {
         Optional<Patient> patientOptional = patientRepo.findById(mediId);
 
         //when sending the notes to the DB incase the mediId is not found > login again
@@ -34,6 +36,9 @@ public class MedicalNotesService {
 
         MedicalNotes note = new MedicalNotes();
         note.setPatient(patientOptional.get());
+        note.setDocName(docName);
+        note.setSpecialization(specialization);
+        note.setDate(LocalDate.now());
         note.setTextContent(textContent);
 
         if(file != null && !file.isEmpty()){
@@ -57,6 +62,6 @@ public class MedicalNotesService {
         if(patientOptional.isEmpty()){
             throw new IllegalArgumentException("Patient with mediId " + mediId + " not found.");
         }
-        return notesRepo.findByMediId(patientOptional.get());
+        return notesRepo.findByPatient(patientOptional.get());
     }
 }

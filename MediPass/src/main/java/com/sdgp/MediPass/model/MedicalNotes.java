@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class MedicalNotes {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long medicalNotes;
 
     @ManyToOne
@@ -25,7 +25,10 @@ public class MedicalNotes {
     private Patient patient;
 
     private LocalDate date;
-
+    private String docName;
+    private String specialization;
+    private String slmc;
+    private String nic;
     private String textContent;
     private String fileName;
     private String fileType;
