@@ -2,6 +2,7 @@ package com.sdgp.MediPass.controller;
 
 import com.sdgp.MediPass.model.ChronicDisease;
 import com.sdgp.MediPass.service.ChronicDiseaseService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,8 +10,8 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/chronic-disease")
-//@RequiredArgsConstructor
 public class ChronicDiseaseController {
+    @Autowired
     private ChronicDiseaseService chronicService;
 
     @PostMapping("/add-disease")
