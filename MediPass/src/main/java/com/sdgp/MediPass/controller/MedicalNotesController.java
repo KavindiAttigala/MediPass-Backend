@@ -3,6 +3,7 @@ package com.sdgp.MediPass.controller;
 import com.sdgp.MediPass.model.MedicalNotes;
 import com.sdgp.MediPass.service.MedicalNotesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,11 +14,8 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/medical-notes")
 public class MedicalNotesController {
-    private final MedicalNotesService mediNotesService;
-
-    public MedicalNotesController(MedicalNotesService mediNotesService) {
-        this.mediNotesService = mediNotesService;
-    }
+    @Autowired
+    private MedicalNotesService mediNotesService;
 
     @PostMapping("/add-records")
     public ResponseEntity<?> addMedicalNotes(@RequestParam Long mediId,
