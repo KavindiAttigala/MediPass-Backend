@@ -4,7 +4,6 @@ import com.sdgp.MediPass.model.MedicalNotes;
 import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.repository.MedicalNotesRepo;
 import com.sdgp.MediPass.repository.PatientRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,10 +19,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class MedicalNotesService {
     private final MedicalNotesRepo notesRepo;
     private final PatientRepository patientRepo;
+
+    public MedicalNotesService(MedicalNotesRepo notesRepo, PatientRepository patientRepo) {
+        this.notesRepo = notesRepo;
+        this.patientRepo = patientRepo;
+    }
+
     private final String uploadDirectory = "medipass/medicalNotes/";
 
     public MedicalNotes saveNotes(Long mediId, String docName, String specialization, LocalDate date, String textContent, MultipartFile file) throws IOException {

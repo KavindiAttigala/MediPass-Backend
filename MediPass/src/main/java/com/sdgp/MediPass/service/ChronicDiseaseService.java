@@ -4,7 +4,6 @@ import com.sdgp.MediPass.model.ChronicDisease;
 import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.repository.ChronicDiseaseRepository;
 import com.sdgp.MediPass.repository.PatientRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,10 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class ChronicDiseaseService {
     private final ChronicDiseaseRepository chroDiseRepo;
     private final PatientRepository patientRepo;
+    public ChronicDiseaseService(ChronicDiseaseRepository chroDiseRepo, PatientRepository patientRepo) {
+        this.chroDiseRepo = chroDiseRepo;
+        this.patientRepo = patientRepo;
+    }
 
 //    public ChronicDisease saveDisease(long id, String diseaseName, String medication, int dosage, char start, char end)throws IOException{
 //        Optional<Patient> patientOptional = patientRepo.findById(id);

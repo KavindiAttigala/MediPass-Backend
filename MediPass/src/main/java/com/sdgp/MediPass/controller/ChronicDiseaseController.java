@@ -2,7 +2,6 @@ package com.sdgp.MediPass.controller;
 
 import com.sdgp.MediPass.model.ChronicDisease;
 import com.sdgp.MediPass.service.ChronicDiseaseService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,9 +9,9 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/chronic-disease")
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class ChronicDiseaseController {
-    private final ChronicDiseaseService chronicService;
+    private ChronicDiseaseService chronicService;
 
     @PostMapping("/add-disease")
     public ResponseEntity<?> addDisease(@RequestParam long mediId, @RequestParam String diseaseName){

@@ -12,9 +12,12 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/medical-notes")
-@RequiredArgsConstructor
 public class MedicalNotesController {
     private final MedicalNotesService mediNotesService;
+
+    public MedicalNotesController(MedicalNotesService mediNotesService) {
+        this.mediNotesService = mediNotesService;
+    }
 
     @PostMapping("/add-records")
     public ResponseEntity<?> addMedicalNotes(@RequestParam Long mediId,
