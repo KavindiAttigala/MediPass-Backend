@@ -4,10 +4,8 @@ import com.sdgp.MediPass.enums.ReportType;
 import com.sdgp.MediPass.model.MedicalReports;
 import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.service.MedicalReportService;
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,6 +63,7 @@ public class MedicalReportController {
     public List<MedicalReports> getReportsByPatientAndType(@PathVariable Long patientId, @PathVariable ReportType reportType) {
         return medicalReportService.getReportsByPatientAndType(patientId, reportType);
     }
+
 
 
 }
