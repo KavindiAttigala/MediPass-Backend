@@ -1,14 +1,13 @@
 package com.sdgp.MediPass.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.annotation.processing.Generated;
+import java.util.List;
 
 @Entity
+@Table(name="Patient")
 public class Patient {
     @Id
     @GeneratedValue(generator = "IdGenerator")
@@ -34,6 +33,18 @@ public class Patient {
 
     public Patient() {
 
+    }
+
+    //one patient can have many medical notes where medical notes is mapped by 'patient' field.
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<MedicalNotes> medicalNotes;
+
+    public List<MedicalNotes> getMedicalNotes() {
+        return medicalNotes;
+    }
+
+    public void setMedicalNotes(List<MedicalNotes> medicalNotes) {
+        this.medicalNotes = medicalNotes;
     }
 
     public long getMediId() {
