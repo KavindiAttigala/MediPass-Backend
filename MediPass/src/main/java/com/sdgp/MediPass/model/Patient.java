@@ -20,6 +20,20 @@ public class Patient {
     private String nic;
     private String contactNumber;
     private String password;
+    private String role;
+
+    public Patient(String firstName, String lastName, String email, String nic, String contactNumber, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.nic = nic;
+        this.contactNumber = contactNumber;
+        this.password = password;
+    }
+
+    public Patient() {
+
+    }
 
     //one patient can have many medical notes where medical notes is mapped by 'patient' field.
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
@@ -87,5 +101,13 @@ public class Patient {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
