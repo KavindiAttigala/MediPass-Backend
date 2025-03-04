@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.annotation.processing.Generated;
+import java.util.List;
 
 @Entity
 @Table(name="Patient")
@@ -19,6 +20,18 @@ public class Patient {
     private String nic;
     private String contactNumber;
     private String password;
+
+    //one patient can have many medical notes where medical notes is mapped by 'patient' field.
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<MedicalNotes> medicalNotes;
+
+    public List<MedicalNotes> getMedicalNotes() {
+        return medicalNotes;
+    }
+
+    public void setMedicalNotes(List<MedicalNotes> medicalNotes) {
+        this.medicalNotes = medicalNotes;
+    }
 
     public long getMediId() {
         return MediId;
