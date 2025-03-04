@@ -16,15 +16,23 @@ public class MedicalNotes {
     @JoinColumn (name="mediIDnotes", nullable = false)
     private Patient patient;
 
+    @ManyToOne
+    @JoinColumn(name = "doctor_guest_log_id", referencedColumnName = "id", nullable = false)
+    private GuestDoctor guestDoctor;
+
     private LocalDate date;
-    private String docName;
-    private String specialization;
-//    private String slmc;
-//    private String nic;
     private String textContent;
     private String fileName;
     private String fileType;
     private String filePath;
+
+    public GuestDoctor getGuestDoctor() {
+        return guestDoctor;
+    }
+
+    public void setGuestDoctor(GuestDoctor guestDoctor) {
+        this.guestDoctor = guestDoctor;
+    }
 
     public Long getMedicalNotes() {
         return medicalNotes;
@@ -48,22 +56,6 @@ public class MedicalNotes {
 
     public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    public String getDocName() {
-        return docName;
-    }
-
-    public void setDocName(String docName) {
-        this.docName = docName;
-    }
-
-    public String getSpecialization() {
-        return specialization;
-    }
-
-    public void setSpecialization(String specialization) {
-        this.specialization = specialization;
     }
 
     public String getTextContent() {

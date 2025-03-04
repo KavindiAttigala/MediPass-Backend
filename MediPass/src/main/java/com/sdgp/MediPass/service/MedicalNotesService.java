@@ -1,9 +1,12 @@
 package com.sdgp.MediPass.service;
 
+import com.sdgp.MediPass.model.GuestDoctor;
 import com.sdgp.MediPass.model.MedicalNotes;
 import com.sdgp.MediPass.model.Patient;
+import com.sdgp.MediPass.repository.GuestDoctorRepository;
 import com.sdgp.MediPass.repository.MedicalNotesRepo;
 import com.sdgp.MediPass.repository.PatientRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,28 +23,30 @@ import java.util.UUID;
 
 @Service
 public class MedicalNotesService {
-    private final MedicalNotesRepo notesRepo;
-    private final PatientRepository patientRepo;
+    @Autowired
+    private MedicalNotesRepo notesRepo;
 
-    public MedicalNotesService(MedicalNotesRepo notesRepo, PatientRepository patientRepo) {
-        this.notesRepo = notesRepo;
-        this.patientRepo = patientRepo;
-    }
+    @Autowired
+    private PatientRepository patientRepo;
+
+    @Autowired
+    private GuestDoctorRepository guestDoctorRepo;
 
     private final String uploadDirectory = "medipass/medicalNotes/";
 
-    public MedicalNotes saveNotes(Long mediId, String docName, String specialization, LocalDate date, String textContent, MultipartFile file) throws IOException {
-        Optional<Patient> patientOptional = patientRepo.findById(mediId);
+    public MedicalNotes saveNotes(Long id, String textContent, MultipartFile file) throws IOException {
 
+        Optional<Patient> patientOptional = patientRepo.findById(id);
         //when sending the notes to the DB incase the mediId is not found > login again
         if(patientOptional.isEmpty()){
-            throw new IllegalArgumentException("Patient with mediId "+ mediId+" not found.");
+            throw new IllegalArgumentException("Patient with mediId "+ id+" not found.");
         }
+
+        Optional<GuestDoctor> guestDoctorOptional = guestDoctorRepo.findById(id);
 
         MedicalNotes note = new MedicalNotes();
         note.setPatient(patientOptional.get());
-        note.setDocName(docName);
-        note.setSpecialization(specialization);
+        note.setGuestDoctor(guestDoctorOptional.get());
         note.setDate(LocalDate.now());
         note.setTextContent(textContent);
 
