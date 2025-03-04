@@ -3,6 +3,7 @@ package com.sdgp.MediPass.service;
 import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,12 +13,13 @@ public class PatientService {
 
     @Autowired
     private PatientRepository patientRepository;
+    private PasswordEncoder passwordEncoder;
     public Patient registerPatientAdult(Patient patient) {
         List<Patient> existingPatients = patientRepository.findByNic(patient.getEmail());
         if (existingPatients != null) {
             throw new RuntimeException("Account already exists for this NIC");
         }
-//        user.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt password
+        patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
         return patientRepository.save(patient);
     }
 
@@ -26,7 +28,7 @@ public class PatientService {
         if (existingPatients == null){
             throw new RuntimeException("No account found for this NIC");
         }
-//        user.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt password
+        patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
         return patientRepository.save(patient);
 
     }
