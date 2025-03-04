@@ -1,34 +1,72 @@
 package com.sdgp.MediPass.model;
 
+import com.sdgp.MediPass.enums.ReportType;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
+@Entity
 public class MedicalReports {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long medicalNotes;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name="mediIDnotes", nullable = false)
+    @JoinColumn(name="patient_id", nullable = false)
     private Patient patient;
 
-    private LocalDate date;
+    @Enumerated(EnumType.STRING)
+    private ReportType reportType;
+
+
     private String docName;
     private String specialization;
     private String slmc;
     private String nic;
-    private String textContent;
+
+    private String title;
+    private String description;
     private String fileName;
     private String fileType;
     private String filePath;
 
-    public Long getMedicalNotes() {
-        return medicalNotes;
+    public MedicalReports(String title, String description, String fileName, String fileType, String filePath, ReportType reportType, Patient patient) {
+        this.title = title;
+        this.description = description;
+        this.fileName = fileName;
+        this.fileType = fileType;
+        this.filePath = filePath;
+        this.reportType = reportType;
+        this.patient = patient;
     }
 
-    public void setMedicalNotes(Long medicalNotes) {
-        this.medicalNotes = medicalNotes;
+    public MedicalReports(Long medicalReportsId, Patient patient, String docName, String specialization, String slmc, String nic, String title, String description, String fileName, String fileType, String filePath) {
+        this.id = medicalReportsId;
+        this.patient = patient;
+        this.docName = docName;
+        this.specialization = specialization;
+        this.slmc = slmc;
+        this.nic = nic;
+        this.title = title;
+        this.description = description;
+        this.fileName = fileName;
+        this.fileType = fileType;
+        this.filePath = filePath;
+    }
+
+    public MedicalReports() {
+
+    }
+
+    public MedicalReports(String title, String description, String originalFilename, String contentType, String filePath, Patient patient) {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Patient getPatient() {
@@ -37,14 +75,6 @@ public class MedicalReports {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
     }
 
     public String getDocName() {
@@ -79,12 +109,20 @@ public class MedicalReports {
         this.nic = nic;
     }
 
-    public String getTextContent() {
-        return textContent;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTextContent(String textContent) {
-        this.textContent = textContent;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getFileName() {
@@ -109,5 +147,13 @@ public class MedicalReports {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public ReportType getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(ReportType reportType) {
+        this.reportType = reportType;
     }
 }
