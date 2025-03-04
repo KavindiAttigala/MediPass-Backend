@@ -2,7 +2,6 @@ package com.sdgp.MediPass.service;
 
 import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.repository.PatientRepository;
-import org.springframework.aop.target.LazyInitTargetSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +29,13 @@ public class PatientService {
 //        user.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt password
         return patientRepository.save(patient);
 
+    }
+
+    public List<Patient> getUserByMediId(Long mediId) {
+        return patientRepository.findByMediId(mediId);
+    }
+
+    public Patient updatePatient(Patient patient) {
+        return patientRepository.save(patient); // Saves the updated patient in the database
     }
 }
