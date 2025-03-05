@@ -23,7 +23,7 @@ public class OTPService {
     private final Map<String, String> otpStorage = new HashMap<>();
 
     //find the relevant email through nic and mediId
-    public String sendOTP(String nic, String mediId){
+    public String sendOTP(String nic, long mediId){
         Optional<Patient> patientOptional = patientRepository.findByNicAndMediId(nic, mediId);
 
         if(patientOptional.isEmpty()){

@@ -13,7 +13,7 @@ public class OTPController {
     private OTPService otpService;
 
     @PostMapping("/send")
-    public ResponseEntity<String> sendOTP(@RequestParam String nic, @RequestParam String mediId){
+    public ResponseEntity<String> sendOTP(@RequestParam String nic, @RequestParam long mediId){
         try{
             return ResponseEntity.ok(otpService.sendOTP(nic,mediId));
         }catch(RuntimeException e){

@@ -23,6 +23,7 @@ public class MedicalReports {
     private String specialization;
     private String slmc;
     private String nic;
+//    private long patientId;
 
     private String title;
     private String description;
@@ -76,6 +77,10 @@ public class MedicalReports {
     public void setPatient(Patient patient) {
         this.patient = patient;
     }
+
+//    public void setPatientId() {
+//        this.patientId = patient.getMediId();
+//    }
 
     public String getDocName() {
         return docName;
