@@ -12,8 +12,10 @@ public class CalendarReminder {
     private Long id;
 
     private String description;
-    private LocalDateTime start;
-    private LocalDateTime end;
+    @Column(name = "start_time")
+    private LocalDateTime startTime;
+    @Column(name = "end_time")
+    private LocalDateTime endTime;
     private String email;
 
     @ManyToOne
@@ -31,20 +33,32 @@ public class CalendarReminder {
         this.description = description;
     }
 
-    public LocalDateTime getStart() {
-        return start;
+    public Long getId() {
+        return id;
     }
 
-    public LocalDateTime getEnd() {
-        return end;
+    public String getDescription() {
+        return description;
     }
 
-    public void setStart(LocalDateTime start) {
-        this.start = start;
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
-    public void setEnd(LocalDateTime end) {
-        this.end = end;
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public Patient getPatient() {
+        return patient;
     }
 
     public String getEmail() {

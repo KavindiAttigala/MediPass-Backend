@@ -10,14 +10,14 @@ public class MedicalNotes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long medicalNotes;
+    private Long id;
 
     @ManyToOne
     @JoinColumn (name="mediIDnotes", nullable = false)
     private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "doctor_guest_log_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "guestDoctorId", referencedColumnName = "id", nullable = false)
     private GuestDoctor guestDoctor;
 
     private LocalDate date;
@@ -34,12 +34,12 @@ public class MedicalNotes {
         this.guestDoctor = guestDoctor;
     }
 
-    public Long getMedicalNotes() {
-        return medicalNotes;
+    public Long getId() {
+        return id;
     }
 
-    public void setMedicalNotes(Long medicalNotes) {
-        this.medicalNotes = medicalNotes;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Patient getPatient() {

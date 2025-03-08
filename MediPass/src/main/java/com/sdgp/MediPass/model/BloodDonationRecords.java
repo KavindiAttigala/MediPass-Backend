@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name="BloodDonationRecords")
 public class BloodDonationRecords {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long donationId;
