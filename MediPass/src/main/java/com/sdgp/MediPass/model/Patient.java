@@ -12,7 +12,7 @@ public class Patient {
     @Id
     @GeneratedValue(generator = "IdGenerator")
     @GenericGenerator(name = "IdGenerator", strategy = "com.sdgp.MediPass.util.IdGenerator")
-    private long MediId;
+    private long mediId;
 
     private String firstName;
     private String lastName;
@@ -48,11 +48,11 @@ public class Patient {
     }
 
     public long getMediId() {
-        return MediId;
+        return mediId;
     }
 
     public void setMediId(long mediId) {
-        MediId = mediId;
+        mediId = mediId;
     }
 
     public String getFirstName() {

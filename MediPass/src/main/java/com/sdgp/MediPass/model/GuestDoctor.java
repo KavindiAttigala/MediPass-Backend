@@ -18,7 +18,7 @@ public class GuestDoctor {
     private LocalDateTime date;
 
     //one-to-many relationship between guestDoctor and MedicalNotes where medical notes is mapped by 'DoctorGuestLog' field
-    @OneToMany(mappedBy = "guestDoctorLog", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "guestDoctor", cascade = CascadeType.ALL)
     private List<MedicalNotes> medicalNotes;
 
     public List<MedicalNotes> getMedicalNotes() {

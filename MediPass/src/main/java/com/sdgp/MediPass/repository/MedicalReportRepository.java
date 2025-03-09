@@ -15,6 +15,7 @@ public interface MedicalReportRepository extends JpaRepository <MedicalReports, 
     List<MedicalReports> findByReportType(ReportType reportType);
     List<MedicalReports> findByPatientMediIdAndReportType (Long mediId, ReportType reportType);
 
-    @Query("SELECT r FROM MedicalReports r WHERE r.reportType = :reportType AND r.patient.MediId = :patientId")
+    @Query("SELECT m FROM MedicalReports m WHERE m.reportType = :reportType AND m.patient.mediId = :patientId")
     List<MedicalReports> filterReports(@Param("reportType") ReportType reportType, @Param("patientId") Long patientId);
+
 }

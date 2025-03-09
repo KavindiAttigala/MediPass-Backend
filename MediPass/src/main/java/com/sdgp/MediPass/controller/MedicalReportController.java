@@ -49,9 +49,9 @@ public class MedicalReportController {
         }
     }
 
-    @GetMapping("/patient/{patientId}")
-    public List<MedicalReports> getReportsByPatient(@PathVariable Long patientId) {
-        return medicalReportService.getReportsByPatientId(patientId);
+    @GetMapping("/patient")
+    public List<MedicalReports> getReportsByPatient(@RequestParam Patient patient) {
+        return medicalReportService.getReportsByPatientId(patient.getMediId());
     }
 
     @GetMapping("/type/{reportType}")

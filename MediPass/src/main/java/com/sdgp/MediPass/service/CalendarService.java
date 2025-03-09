@@ -49,8 +49,8 @@ public class CalendarService {
     public CalendarReminder addReminder(String description, String start, String end, String email){
         CalendarReminder calendarReminder = new CalendarReminder();
         calendarReminder.setDescription(description);
-        calendarReminder.setStart(LocalDateTime.parse(start));
-        calendarReminder.setEnd(LocalDateTime.parse(end));
+        calendarReminder.setStartTime(LocalDateTime.parse(start));
+        calendarReminder.setEndTime(LocalDateTime.parse(end));
         calendarReminder.setEmail(email);
         calendarReminder.setReminderSent(false);
 
@@ -64,14 +64,14 @@ public class CalendarService {
 
         for(CalendarReminder calendarReminder: reminder){
             //check for 1 day reminder
-            if(!calendarReminder.isReminderSent() && calendarReminder.getStart().minusDays(1).isBefore(now)){
+            if(!calendarReminder.isReminderSent() && calendarReminder.getStartTime().minusDays(1).isBefore(now)){
                 emailReminderService.sendEmail(calendarReminder.getEmail(), "Reminder "," Your scheduled event is in 1 day");
                 calendarReminder.setReminderSent(true);
                 calendarRepository.save(calendarReminder);
             }
 
             //check for 6 hour reminder
-            if(!calendarReminder.isReminderSent() && calendarReminder.getStart().minusHours(6).isBefore(now)){
+            if(!calendarReminder.isReminderSent() && calendarReminder.getStartTime().minusHours(6).isBefore(now)){
                 emailReminderService.sendEmail(calendarReminder.getEmail(), "Reminder", "Your scheduled event is in 6 hours");
                 calendarReminder.setReminderSent(true);
                 calendarRepository.save(calendarReminder);

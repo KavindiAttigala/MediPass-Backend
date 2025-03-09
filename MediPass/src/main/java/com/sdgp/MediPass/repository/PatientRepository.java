@@ -9,12 +9,12 @@ import java.util.Optional;
 
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
-    List<Patient> findByMediId(long mediId);
+//    List<Patient> findByMediId(long mediId);
     List<Patient> findByNic(String nic);
 
     List<Patient> findByRoleAndAndNic(String role, String nic);
   
-    Optional<Patient> findByNicAndMediId(String nic, String mediId);
+    Optional<Patient> findByNicAndMediId(String nic, long mediId);
 
-    Optional<Patient> findByMediId(Long mediId);
+    List<Patient> findByMediId(long mediID);
 }
