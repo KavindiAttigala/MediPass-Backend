@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class ChronicDiseaseController {
     }
 
     @PostMapping("/add-medication")
-    public ResponseEntity<?> addMedication(@RequestParam long mediId, @RequestParam String medication, @RequestParam int dosage, @RequestParam char start, @RequestParam char end){
+    public ResponseEntity<?> addMedication(@RequestParam long mediId, @RequestParam String medication, @RequestParam int dosage, @RequestParam LocalDate start, @RequestParam LocalDate end){
         try{
             ChronicDisease chronicDisease = chronicService.addMedication(mediId, medication, dosage, start, end);
             return ResponseEntity.ok(chronicDisease);
