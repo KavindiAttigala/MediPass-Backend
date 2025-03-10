@@ -22,6 +22,7 @@ public class Patient {
     private String password;
     private String role;
 
+
     public Patient(String firstName, String lastName, String email, String nic, String contactNumber, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -34,6 +35,8 @@ public class Patient {
     public Patient() {
 
     }
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<BloodDonationRecords> bloodDonationRecords;
 
     //one patient can have many medical notes where medical notes is mapped by 'patient' field.
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
@@ -52,7 +55,7 @@ public class Patient {
     }
 
     public void setMediId(long mediId) {
-        mediId = mediId;
+        this.mediId = mediId;
     }
 
     public String getFirstName() {
