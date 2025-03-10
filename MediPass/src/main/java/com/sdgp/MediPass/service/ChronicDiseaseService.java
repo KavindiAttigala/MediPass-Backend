@@ -19,7 +19,7 @@ public class ChronicDiseaseService {
         this.chroDiseRepo = chroDiseRepo;
         this.patientRepo = patientRepo;
     }
-    
+
     public ChronicDisease addDisease(long mediId, String diseaseName) throws IOException{
         Optional<Patient> patientOptional = patientRepo.findById(mediId);       //retrieve patient from the DB
         if(patientOptional.isEmpty()){
@@ -34,7 +34,7 @@ public class ChronicDiseaseService {
         return chroDiseRepo.save(chronic);
     }
 
-    public ChronicDisease addMedication(long mediId, String medication, int dosage, char start, char end) throws IOException{
+    public ChronicDisease addMedication(long mediId, String medication, int dosage, LocalDate start, LocalDate end) throws IOException{
         Optional<Patient> patientOptional = patientRepo.findById(mediId);       //retrieve patient from the DB
         if(patientOptional.isEmpty()){
             throw new IllegalArgumentException("Patient with mediId "+ mediId+" not found.");
