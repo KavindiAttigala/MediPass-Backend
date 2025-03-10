@@ -2,6 +2,7 @@ package com.sdgp.MediPass.controller;
 
 import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.service.PatientService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/patient")
+@Api(value = "Patient Data", description = "Creating profiles for new patients and updating existing patient profiles")
 public class PatientController {
     @Autowired
     private PatientService patientService;
