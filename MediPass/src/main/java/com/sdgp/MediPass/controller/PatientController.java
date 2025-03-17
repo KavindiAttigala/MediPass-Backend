@@ -22,9 +22,9 @@ public class PatientController {
     @ApiOperation(value= "Update Patient Profile", notes= "Update patient details based on MediID")
     @PutMapping("/{mediId}")
     public ResponseEntity<?> updateUserProfile(@PathVariable Long mediId, @RequestBody Patient updatedPatient) {
-        List<Patient> patientsList = patientService.getUserByMediId(mediId);
+        Optional<Patient> patientsList = patientService.getUserByMediId(mediId);
         if (!patientsList.isEmpty()) {
-            Patient patient = patientsList.get(0); // Retrieve the first patient from the list
+            Patient patient = patientsList.get(); // Retrieve the first patient from the list
             patient.setFirstName(updatedPatient.getFirstName());
             patient.setLastName(updatedPatient.getLastName());
             patient.setContactNumber(updatedPatient.getContactNumber());

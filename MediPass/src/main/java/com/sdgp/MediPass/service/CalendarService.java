@@ -30,11 +30,11 @@ public class CalendarService {
     private PatientRepository patientRepository;
 
     //schedule events and save it in the DB
-    public CalendarReminder addReminder(String description, String start, String end, String email, long mediID){
+    public CalendarReminder addReminder(String description, String start, String end, String email, long mediId){
         // Fetch Patient using mediID
-        Optional<Patient> patientOptional = patientRepository.findByMediID(mediID);
+        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
         if(patientOptional.isEmpty()){
-            throw new IllegalArgumentException("Patient with mediId "+ mediID+" not found.");
+            throw new IllegalArgumentException("Patient with mediId "+ mediId+" not found.");
         }
 
         Patient patient = patientOptional.get();

@@ -34,7 +34,7 @@ public class PatientService {
 
     }
 
-    public List<Patient> getUserByMediId(Long mediId) {
+    public Optional<Patient> getUserByMediId(Long mediId) {
         return patientRepository.findByMediId(mediId);
     }
 
