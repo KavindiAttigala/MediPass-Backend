@@ -2,6 +2,7 @@ package com.sdgp.MediPass.controller;
 
 import com.sdgp.MediPass.model.CalendarReminder;
 import com.sdgp.MediPass.service.CalendarService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/calendar-reminders")
+@Api(value="Medical calendar", description = "Scheduling events on the medical calendar to get reminders")
 public class CalendarController {
 
     @Autowired

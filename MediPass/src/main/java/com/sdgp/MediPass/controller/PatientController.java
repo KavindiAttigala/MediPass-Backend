@@ -3,6 +3,7 @@ package com.sdgp.MediPass.controller;
 import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.service.PatientService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,11 @@ import java.util.Optional;
 @RequestMapping("/patient")
 @Api(value = "Patient Data", description = "Creating profiles for new patients and updating existing patient profiles")
 public class PatientController {
+
     @Autowired
     private PatientService patientService;
 
+    @ApiOperation(value= "Update Patient Profile", notes= "Update patient details based on MediID")
     @PutMapping("/{mediId}")
     public ResponseEntity<?> updateUserProfile(@PathVariable Long mediId, @RequestBody Patient updatedPatient) {
         List<Patient> patientsList = patientService.getUserByMediId(mediId);
