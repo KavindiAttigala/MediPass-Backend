@@ -1,9 +1,6 @@
 package com.sdgp.MediPass.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDate;
 
 @Entity
@@ -18,7 +15,8 @@ public class BloodDonationRecords {
     private String place;
 
     @ManyToOne      //since many blood donation records can be associated with one patient
-    @JoinColumn(name = "mediIdBD", nullable = false)     //FK referring to the MediId(PK) in Patient table
+//    @JoinColumn(name = "mediIdBD", nullable = false)     //FK referring to the MediId(PK) in Patient table
+    @JoinColumn(name = "mediId", referencedColumnName = "mediId", nullable = false)
     private Patient patient;
 
     public Long getDonationId() {

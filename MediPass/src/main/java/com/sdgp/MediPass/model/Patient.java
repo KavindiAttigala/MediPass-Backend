@@ -22,9 +22,6 @@ public class Patient {
     private String password;
     private String role;
 
-//    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-//    private List<CalendarReminder> reminders;
-
     public Patient(String firstName, String lastName, String email, String nic, String contactNumber, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
