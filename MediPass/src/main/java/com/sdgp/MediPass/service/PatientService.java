@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PatientService {
@@ -39,5 +40,16 @@ public class PatientService {
 
     public Patient updatePatient(Patient patient) {
         return patientRepository.save(patient); // Saves the updated patient in the database
+    }
+
+    public String verifyUserAndGetEmail(String nic, long mediId) {
+        // Fetch the patient by NIC and MediID
+        Optional<Patient> patientOpt = patientRepository.findByNicAndMediId(nic, mediId);
+
+        if (patientOpt.isPresent()) {
+            return patientOpt.get().getEmail();
+        }
+
+        return "User email not found";
     }
 }
