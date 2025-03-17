@@ -20,33 +20,25 @@ import java.util.Optional;
 @Service
 public class CalendarService {
 
-//    @Autowired
-//    private CalendarRepository calendarRepo;
-//
-//    @Autowired
-//    private PatientRepository patientRepo;
-//
-//    public String createReminder(Long mediId,String description, LocalDate date) throws IOException, GeneralSecurityException{
-//        Optional<Patient> patientOptional = patientRepo.findByMediId(mediId);
-//
-//        if (!patientOptional.isPresent()) {
-//            return "Patient not found.";
-//        }
-//
-//        Patient patient = patientOptional.get();
-//        String patientEmail = patient.getEmail();
-//
-//
-//    }
-
     @Autowired
     private CalendarRepository calendarRepository;
 
     @Autowired
     private EmailReminderService emailReminderService;
 
+    @Autowired
+    private PatientRepository patientRepository;
+
     //schedule events and save it in the DB
-    public CalendarReminder addReminder(String description, String start, String end, String email){
+    public CalendarReminder addReminder(String description, String start, String end, String email, long mediID){
+        // Fetch Patient using mediID
+        Optional<Patient> patientOptional = patientRepository.findByMediID(mediID);
+        if(patientOptional.isEmpty()){
+            throw new IllegalArgumentException("Patient with mediId "+ mediID+" not found.");
+        }
+
+        Patient patient = patientOptional.get();
+
         CalendarReminder calendarReminder = new CalendarReminder();
         calendarReminder.setDescription(description);
         calendarReminder.setStartTime(LocalDateTime.parse(start));
@@ -77,6 +69,15 @@ public class CalendarService {
                 calendarRepository.save(calendarReminder);
             }
         }
+    }
+
+    public void deleteReminder(long id){
+        Optional<CalendarReminder> reminderOptional = calendarRepository.findById(id);
+        if(reminderOptional.isEmpty()){
+            throw new IllegalArgumentException("Reminder with mediId "+ id+" not found.");
+        }
+
+        calendarRepository.delete(reminderOptional.get());
     }
 
 }

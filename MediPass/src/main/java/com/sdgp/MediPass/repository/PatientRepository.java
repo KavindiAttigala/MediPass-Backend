@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
-//    List<Patient> findByMediId(long mediId);
+
     List<Patient> findByNic(String nic);
 
     List<Patient> findByRoleAndAndNic(String role, String nic);
@@ -17,4 +17,6 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     Optional<Patient> findByNicAndMediId(String nic, long mediId);
 
     List<Patient> findByMediId(long mediID);
+
+    Optional<Patient> findByMediID(long mediID);
 }

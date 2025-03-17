@@ -78,6 +78,6 @@ public class CalendarReminder {
     }
 
     public boolean isReminderSent() {
-        return false;
+        return reminderSent;
     }
 }
