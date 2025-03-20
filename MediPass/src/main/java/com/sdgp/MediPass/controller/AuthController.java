@@ -24,6 +24,8 @@ public class AuthController {
 
     @Autowired
     private PatientService patientService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @ApiOperation(value = "Register an adult patient")

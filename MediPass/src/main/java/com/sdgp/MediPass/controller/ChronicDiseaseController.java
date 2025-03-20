@@ -53,6 +53,4 @@ public class ChronicDiseaseController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-
 }
