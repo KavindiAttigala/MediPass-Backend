@@ -46,9 +46,9 @@ public class AuthController {
     @ApiOperation(value = "Authenticate login")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        List<Patient> patientList = patientService.getUserByMediId(request.getMediId());
+        Optional<Patient> patientList = patientService.getUserByMediId(request.getMediId());
         if (!patientList.isEmpty()) {
-            Patient patient = patientList.get(0);
+            Patient patient = patientList.get();
             if (passwordEncoder.matches(request.getPassword(), patient.getPassword())) {
                 return ResponseEntity.ok(patient);
             }
