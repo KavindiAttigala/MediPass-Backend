@@ -34,4 +34,16 @@ public class PatientController {
         return ResponseEntity.notFound().build();
     }
 
+    @ApiOperation(value = "Change password by verifying existing password")
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@RequestParam long mediId, @RequestParam String oldPassword, @RequestParam String newPassword) {
+        boolean change = patientService.changePassword(mediId, oldPassword, newPassword);
+
+        //change is TRUE means the password update was successfull therefore returns TRUE
+        if (change) {
+            return ResponseEntity.ok("Password changed");
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

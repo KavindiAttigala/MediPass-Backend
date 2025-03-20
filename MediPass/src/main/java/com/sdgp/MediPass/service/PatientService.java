@@ -14,7 +14,9 @@ public class PatientService {
 
     @Autowired
     private PatientRepository patientRepository;
+
     private PasswordEncoder passwordEncoder;
+
     public Patient registerPatientAdult(Patient patient) {
         List<Patient> existingPatients = patientRepository.findByNic(patient.getEmail());
         if (existingPatients != null) {
@@ -53,7 +55,7 @@ public class PatientService {
         return "User email not found";
     }
 
-    //update the password
+    //boolean to update the password
     public boolean updatePassword(Long mediId, String newPassword) {
         Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
         if (patientOptional.isPresent()) {
@@ -63,5 +65,35 @@ public class PatientService {
             return true;
         }
         return false;
+    }
+
+    public boolean verifyOldPassword(Long mediId, String oldPassword) {
+        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        if (patientOptional.isEmpty()) {
+            return false;   //Invalid MediID
+        }
+        Patient patient = patientOptional.get();
+        //verify the old password
+        return passwordEncoder.matches(oldPassword, patient.getPassword());
+    }
+
+
+    public boolean changePassword(Long mediId, String oldPassword, String newPassword) {
+        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        if (patientOptional.isEmpty()) {
+            return false;
+        }
+        Patient patient = patientOptional.get();
+
+        //verify the existing password before updating
+        if(!verifyOldPassword(mediId, oldPassword)){
+            return false;
+        }
+
+        //encrypt the new password and update
+        patient.setPassword(passwordEncoder.encode(newPassword));
+        patientRepository.save(patient);
+        return true;
+
     }
 }
