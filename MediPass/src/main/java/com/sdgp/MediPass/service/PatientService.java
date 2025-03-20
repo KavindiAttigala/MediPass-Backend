@@ -52,4 +52,16 @@ public class PatientService {
 
         return "User email not found";
     }
+
+    //update the password
+    public boolean updatePassword(Long mediId, String newPassword) {
+        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        if (patientOptional.isPresent()) {
+            Patient patient = patientOptional.get();
+            patient.setPassword(newPassword); // Saving password
+            patientRepository.save(patient);
+            return true;
+        }
+        return false;
+    }
 }
