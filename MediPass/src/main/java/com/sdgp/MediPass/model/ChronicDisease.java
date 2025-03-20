@@ -18,7 +18,9 @@ public class ChronicDisease {
     private String diseaseName;
     private String medication;
     private int dosage;
+    @Column(name = "start_time")
     private LocalDate startDate;
+    @Column(name = "end_time")
     private LocalDate endDate;
     private LocalDate date;
 
