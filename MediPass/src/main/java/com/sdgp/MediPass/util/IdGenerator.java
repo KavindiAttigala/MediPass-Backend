@@ -22,7 +22,7 @@ public class IdGenerator implements IdentifierGenerator {
 
     private boolean isUnique(SharedSessionContractImplementor session, int id){
         Long count = (Long) session.createQuery(
-                "SELECT COUNT(e) FROM Patient e WHERE e.MediId = :id")
+                "SELECT COUNT(e) FROM Patient e WHERE e.mediId = :id")
                 .setParameter("id",id)
                 .uniqueResult();
 
