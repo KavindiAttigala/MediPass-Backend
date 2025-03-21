@@ -3,6 +3,7 @@ package com.sdgp.MediPass.controller;
 import com.sdgp.MediPass.model.ChronicDisease;
 import com.sdgp.MediPass.service.ChronicDiseaseService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ public class ChronicDiseaseController {
     @Autowired
     private ChronicDiseaseService chronicService;
 
+
+    @ApiOperation(value = "Storing chronic disease records in DB")
     @PostMapping("/add-disease")
     public ResponseEntity<?> addDisease(@RequestParam long mediId, @RequestParam String diseaseName){
         try{
@@ -28,6 +31,8 @@ public class ChronicDiseaseController {
         }
     }
 
+
+    @ApiOperation(value = "Storing the medications of chronic diseases")
     @PostMapping("/add-medication")
     public ResponseEntity<?> addMedication(@RequestParam long mediId, @RequestParam String medication, @RequestParam int dosage, @RequestParam LocalDate start, @RequestParam LocalDate end){
         try{
@@ -38,6 +43,7 @@ public class ChronicDiseaseController {
         }
     }
 
+    @ApiOperation(value = "Retrieving chronic disease records from DB")
     @GetMapping("/get-disease")
     public ResponseEntity<?> getDisease(@RequestParam long mediId) {
         try {
@@ -47,6 +53,4 @@ public class ChronicDiseaseController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-
 }

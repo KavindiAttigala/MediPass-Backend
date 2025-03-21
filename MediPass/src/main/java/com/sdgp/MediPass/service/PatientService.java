@@ -9,13 +9,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PatientService {
 
     @Autowired
     private PatientRepository patientRepository;
+
     private PasswordEncoder passwordEncoder;
+
     public Patient registerPatientAdult(Patient patient) {
         List<Patient> existingPatients = patientRepository.findByNic(patient.getEmail());
         if (existingPatients != null) {
@@ -49,11 +52,64 @@ public class PatientService {
         return Collections.emptyList();
     }
 
-    public List<Patient> getUserByMediId(Long mediId) {
+    public Optional<Patient> getUserByMediId(Long mediId) {
         return patientRepository.findByMediId(mediId);
     }
 
     public Patient updatePatient(Patient patient) {
         return patientRepository.save(patient); // Saves the updated patient in the database
+    }
+
+    public String verifyUserAndGetEmail(String nic, long mediId) {
+        // Fetch the patient by NIC and MediID
+        Optional<Patient> patientOpt = patientRepository.findByNicAndMediId(nic, mediId);
+
+        if (patientOpt.isPresent()) {
+            return patientOpt.get().getEmail();
+        }
+
+        return "User email not found";
+    }
+
+    //boolean to update the password
+    public boolean updatePassword(Long mediId, String newPassword) {
+        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        if (patientOptional.isPresent()) {
+            Patient patient = patientOptional.get();
+            patient.setPassword(newPassword); // Saving password
+            patientRepository.save(patient);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean verifyOldPassword(Long mediId, String oldPassword) {
+        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        if (patientOptional.isEmpty()) {
+            return false;   //Invalid MediID
+        }
+        Patient patient = patientOptional.get();
+        //verify the old password
+        return passwordEncoder.matches(oldPassword, patient.getPassword());
+    }
+
+
+    public boolean changePassword(Long mediId, String oldPassword, String newPassword) {
+        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        if (patientOptional.isEmpty()) {
+            return false;
+        }
+        Patient patient = patientOptional.get();
+
+        //verify the existing password before updating
+        if(!verifyOldPassword(mediId, oldPassword)){
+            return false;
+        }
+
+        //encrypt the new password and update
+        patient.setPassword(passwordEncoder.encode(newPassword));
+        patientRepository.save(patient);
+        return true;
+
     }
 }

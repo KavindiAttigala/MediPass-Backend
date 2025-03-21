@@ -19,11 +19,11 @@ public class CalendarReminder {
     private String email;
 
     @ManyToOne
-    @JoinColumn (name="mediIDnotes", nullable = false)
+    @JoinColumn (name="mediIDcalendar", nullable = false)
     private Patient patient;
 
     @Column(name = "reminder_sent")
-    private boolean reminderSent; // To avoid sending multiple reminders
+    private boolean reminderSent;   // To avoid sending multiple reminders
 
     public void setId(Long id) {
         this.id = id;
@@ -78,6 +78,6 @@ public class CalendarReminder {
     }
 
     public boolean isReminderSent() {
-        return false;
+        return reminderSent;
     }
 }
