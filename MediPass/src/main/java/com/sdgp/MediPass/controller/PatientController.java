@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -19,16 +18,16 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
 
-    @ApiOperation(value= "Update Patient Profile", notes= "Update patient details based on MediID")
+    @ApiOperation(value = "Update Patient Profile", notes = "Update patient details based on MediID")
     @PutMapping("/{mediId}")
     public ResponseEntity<?> updateUserProfile(@PathVariable Long mediId, @RequestBody Patient updatedPatient) {
-        Optional<Patient> patientsList = patientService.getUserByMediId(mediId);
-        if (!patientsList.isEmpty()) {
-            Patient patient = patientsList.get(); // Retrieve the first patient from the list
+        Optional<Patient> patientOpt = patientService.getUserByMediId(mediId);
+        if (patientOpt.isPresent()) {
+            Patient patient = patientOpt.get();
             patient.setFirstName(updatedPatient.getFirstName());
             patient.setLastName(updatedPatient.getLastName());
             patient.setContactNumber(updatedPatient.getContactNumber());
-            patientService.updatePatient(patient); // Ensure you have an update method in your service
+            patientService.updatePatient(patient); // Update the patient profile in the database
             return ResponseEntity.ok(patient);
         }
         return ResponseEntity.notFound().build();
@@ -36,13 +35,13 @@ public class PatientController {
 
     @ApiOperation(value = "Change password by verifying existing password")
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestParam long mediId, @RequestParam String oldPassword, @RequestParam String newPassword) {
+    public ResponseEntity<String> changePassword(@RequestParam long mediId,
+                                                 @RequestParam String oldPassword,
+                                                 @RequestParam String newPassword) {
         boolean change = patientService.changePassword(mediId, oldPassword, newPassword);
-
-        //change is TRUE means the password update was successfull therefore returns TRUE
         if (change) {
             return ResponseEntity.ok("Password changed");
-        }else{
+        } else {
             return ResponseEntity.notFound().build();
         }
     }
