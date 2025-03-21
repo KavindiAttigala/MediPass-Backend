@@ -2,10 +2,12 @@ package com.sdgp.MediPass.service;
 
 import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.repository.PatientRepository;
+import com.sdgp.MediPass.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,6 +33,20 @@ public class PatientService {
         patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
         return patientRepository.save(patient);
 
+    }
+    public List<String> login(long mediId, String password) {
+        List<Patient> patients = patientRepository.findByMediId(mediId);
+
+        if (patients != null && !patients.isEmpty()) {
+            Patient patient = patients.get(0); // Assuming mediId is unique
+
+            if (passwordEncoder.matches(password, patient.getPassword())) {
+                String token = JwtUtil.generateToken(String.valueOf(mediId));
+                return List.of(token);
+            }
+        }
+
+        return Collections.emptyList();
     }
 
     public List<Patient> getUserByMediId(Long mediId) {

@@ -7,13 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -39,13 +36,16 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        List<Patient> patientList = patientService.getUserByMediId(request.getMediId());
-        if (!patientList.isEmpty()) {
-            Patient patient = patientList.get(0);
-            if (passwordEncoder.matches(request.getPassword(), patient.getPassword())) {
-                return ResponseEntity.ok(patient);
-            }
+        List<String> response = patientService.login(request.getMediId(), request.getPassword());
+
+        if (!response.isEmpty()) {
+            return ResponseEntity.ok(Map.of(
+                    "token", response.get(0),
+                    "mediId", request.getMediId(),
+                    "message", "Login successful"
+            ));
         }
+
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
 
