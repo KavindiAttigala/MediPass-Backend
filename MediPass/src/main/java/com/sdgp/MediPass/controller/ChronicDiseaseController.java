@@ -2,14 +2,18 @@ package com.sdgp.MediPass.controller;
 
 import com.sdgp.MediPass.model.ChronicDisease;
 import com.sdgp.MediPass.service.ChronicDiseaseService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/chronic-disease")
+@Api(value = "Chronic Disease Records", description = "Managing a record of chronic diseases and medication of the user")
 public class ChronicDiseaseController {
     @Autowired
     private ChronicDiseaseService chronicService;
@@ -22,19 +26,10 @@ public class ChronicDiseaseController {
         }catch(IOException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        /*
-        catch (IllegalArgumentException e) {        //catch cases where the provided mediId does not match any patient in the database
-            return ResponseEntity.badRequest().body(null);
-        } catch (IOException e) {       //catch potential I/O-related issues that might occur when interacting with the database or other system resources
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-        */
-
     }
 
     @PostMapping("/add-medication")
-    public ResponseEntity<?> addMedication(@RequestParam long mediId, @RequestParam String medication, @RequestParam int dosage, @RequestParam char start, @RequestParam char end){
+    public ResponseEntity<?> addMedication(@RequestParam long mediId, @RequestParam String medication, @RequestParam int dosage, @RequestParam LocalDate start, @RequestParam LocalDate end){
         try{
             ChronicDisease chronicDisease = chronicService.addMedication(mediId, medication, dosage, start, end);
             return ResponseEntity.ok(chronicDisease);
@@ -42,5 +37,16 @@ public class ChronicDiseaseController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/get-disease")
+    public ResponseEntity<?> getDisease(@RequestParam long mediId) {
+        try {
+            List<ChronicDisease> diseases = chronicService.getDisease(mediId);
+            return ResponseEntity.ok(diseases);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
 }

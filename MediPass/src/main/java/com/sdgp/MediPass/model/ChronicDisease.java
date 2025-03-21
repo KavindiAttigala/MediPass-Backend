@@ -18,8 +18,8 @@ public class ChronicDisease {
     private String diseaseName;
     private String medication;
     private int dosage;
-    private char startDate;
-    private char endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private LocalDate date;
 
     public long getId() {
@@ -62,19 +62,19 @@ public class ChronicDisease {
         this.dosage = dosage;
     }
 
-    public char getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(char startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public char getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(char endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
