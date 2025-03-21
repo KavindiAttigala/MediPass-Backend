@@ -54,19 +54,18 @@ public class AuthController {
                     "mediId", request.getMediId(),
                     "message", "Login successful"
             ));
+        }
+
         Optional<Patient> patientList = patientService.getUserByMediId(request.getMediId());
-        if (!patientList.isEmpty()) {
+        if (patientList.isPresent()) {
             Patient patient = patientList.get();
             if (passwordEncoder.matches(request.getPassword(), patient.getPassword())) {
                 return ResponseEntity.ok(patient);
             }
-
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
-
-
 }
 
 
