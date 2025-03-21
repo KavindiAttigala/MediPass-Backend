@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface CalendarRepository extends JpaRepository<CalendarReminder, Long> {
     List<CalendarReminder> findByPatient(Patient patient);
+
+    List<CalendarReminder> findByMediID(Long mediID);
 }
