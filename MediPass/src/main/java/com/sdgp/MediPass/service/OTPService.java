@@ -20,16 +20,15 @@ public class OTPService {
     @Autowired
     private PatientRepository patientRepository;
 
+    //to store the generated OTP temporarily in key-value pairs to verify the OTP (the email is stored as the key)
     private final Map<String, String> otpStorage = new HashMap<>();
 
     //find the relevant email through nic and mediId
     public String sendOTP(String nic, long mediId){
         Optional<Patient> patientOptional = patientRepository.findByNicAndMediId(nic, mediId);
-
         if(patientOptional.isEmpty()){
             throw new RuntimeException("Invalid NIC or MediID");
         }
-
         String email = patientOptional.get().getEmail();
         String otp = generateOTP();
         otpStorage.put(email, otp);   //stores otp temporarily and send it via email
@@ -37,6 +36,22 @@ public class OTPService {
         sendEmail(email, otp);
         return "OTP sent successfully to the mail relevant for the mediId "+ mediId;
     }
+
+
+    //Send OTP for doctor login access
+    public String sendDoctorAccessOTP(Long mediId){
+        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        if(patientOptional.isEmpty()){
+            throw new RuntimeException("Invalid MediID");
+        }
+        String email = patientOptional.get().getEmail();
+        String otp = generateOTP();
+        otpStorage.put(email, otp);
+
+        sendEmail(email, otp);
+        return "OTP sent to the email revelant for the mediId "+ mediId;
+    }
+
 
     //generate the otp
     public String generateOTP(){
@@ -57,6 +72,7 @@ public class OTPService {
 
     //verify the otp
     public boolean verifyOTP(String email, String otp){
+        //checks whether map contains an OTP for the given email AND whether the given OTP matches with the one stored in the map
         return otpStorage.containsKey(email) && otpStorage.get(email).equals(otp);
     }
 }
