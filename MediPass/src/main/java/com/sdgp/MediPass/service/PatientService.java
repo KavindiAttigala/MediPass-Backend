@@ -39,9 +39,16 @@ public class PatientService {
         patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
         return patientRepository.save(patient);
     }
-
     public List<String> login(long mediId, String password) {
-        Optional<Patient> patientOpt = patientRepository.findByMediId(mediId);
+        Optional<Patient> patients = patientRepository.findByMediId(mediId);
+
+        if (patients != null && !patients.isEmpty()) {
+            Patient patient = patients.get(); // Assuming mediId is unique
+// =======
+
+//     public List<String> login(long mediId, String password) {
+//         Optional<Patient> patientOpt = patientRepository.findByMediId(mediId);
+// >>>>>>> main
 
         if (patientOpt.isPresent()) {
             Patient patient = patientOpt.get();
@@ -53,12 +60,36 @@ public class PatientService {
         return Collections.emptyList();
     }
 
-    public Optional<Patient> getUserByMediId(Long mediId) {
+    public Optional<Patient> getPatientByMediId(Long mediId) {
         return patientRepository.findByMediId(mediId);
     }
 
-    public Patient updatePatient(Patient patient) {
-        return patientRepository.save(patient); // Saves the updated patient in the database
+    public Patient savePatient(Patient patient) {
+        return patientRepository.save(patient);
+    }
+
+    public Patient updatePatient(long id, Patient updatedPatient) {
+        return patientRepository.findById(id).map(patient -> {
+            patient.setFirstName(updatedPatient.getFirstName());
+            patient.setLastName(updatedPatient.getLastName());
+            patient.setEmail(updatedPatient.getEmail());
+            patient.setNic(updatedPatient.getNic());
+            patient.setContactNumber(updatedPatient.getContactNumber());
+            patient.setPassword(updatedPatient.getPassword());
+            patient.setRole(updatedPatient.getRole());
+            patient.setBirthday(updatedPatient.getBirthday());
+            patient.setAddress(updatedPatient.getAddress());
+            patient.setBloodGroup(updatedPatient.getBloodGroup());
+            patient.setGender(updatedPatient.getGender());
+            patient.setHeight(updatedPatient.getHeight());
+            patient.setWeight(updatedPatient.getWeight());
+            patient.setAllergy(updatedPatient.getAllergy());
+            patient.setProfilePicture(updatedPatient.getProfilePicture());
+            return patientRepository.save(patient);
+        }).orElse(null);
+    }
+    public void deletePatient(long id) {
+        patientRepository.deleteById(id);
     }
 
     public String verifyUserAndGetEmail(String nic, long mediId) {
@@ -70,7 +101,10 @@ public class PatientService {
         return "User email not found";
     }
 
+    //boolean to update the password
+
     // Update password method with encryption for the new password.
+
     public boolean updatePassword(Long mediId, String newPassword) {
         Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
         if (patientOptional.isPresent()) {
@@ -81,7 +115,6 @@ public class PatientService {
         }
         return false;
     }
-
     public boolean verifyOldPassword(Long mediId, String oldPassword) {
         Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
         if (patientOptional.isEmpty()) {
