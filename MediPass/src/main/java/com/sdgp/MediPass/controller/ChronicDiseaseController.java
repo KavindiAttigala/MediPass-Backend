@@ -53,4 +53,15 @@ public class ChronicDiseaseController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @ApiOperation(value = "Retrieve all medications for a specific chronic disease")
+    @GetMapping("/get-medications")
+    public ResponseEntity<?> getMedications(@RequestParam long mediId, @RequestParam String diseaseName) {
+        try {
+            List<String> medications = chronicService.getMedications(mediId, diseaseName);
+            return ResponseEntity.ok(medications);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
