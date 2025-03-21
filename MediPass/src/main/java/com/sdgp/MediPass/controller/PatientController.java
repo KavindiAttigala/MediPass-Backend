@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -45,15 +44,16 @@ public class PatientController {
         return patient != null ? ResponseEntity.ok(patient) : ResponseEntity.notFound().build();
     }
 
+
     @ApiOperation(value = "Change password by verifying existing password")
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestParam long mediId, @RequestParam String oldPassword, @RequestParam String newPassword) {
+    public ResponseEntity<String> changePassword(@RequestParam long mediId,
+                                                 @RequestParam String oldPassword,
+                                                 @RequestParam String newPassword) {
         boolean change = patientService.changePassword(mediId, oldPassword, newPassword);
-
-        //change is TRUE means the password update was successfull therefore returns TRUE
         if (change) {
             return ResponseEntity.ok("Password changed");
-        }else{
+        } else {
             return ResponseEntity.notFound().build();
         }
     }
