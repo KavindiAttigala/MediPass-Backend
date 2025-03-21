@@ -4,6 +4,8 @@ import com.sdgp.MediPass.enums.ReportType;
 import com.sdgp.MediPass.model.MedicalReports;
 import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.service.MedicalReportService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,22 +17,27 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/reports")
+@Api(value = "Medical Reports", description = "Managing medical reports of the patient")
 public class MedicalReportController {
 
     @Autowired
     private MedicalReportService medicalReportService;
 
+    @ApiOperation(value = "Retrieving all medical reports")
     @GetMapping
     public List<MedicalReports> getAllReports() {
         return medicalReportService.getAllReports();
     }
 
+    @ApiOperation(value = "Retrieving medical reports by mediId")
     @GetMapping("/{id}")
     public ResponseEntity<MedicalReports> getReportById(@PathVariable Long id) {
         return medicalReportService.getReportById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @ApiOperation(value = "Storing medical reports")
     @PostMapping("/upload")
     public ResponseEntity<MedicalReports> uploadReport(
             @RequestParam("file") MultipartFile file,
