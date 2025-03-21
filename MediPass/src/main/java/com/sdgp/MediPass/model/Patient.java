@@ -21,6 +21,15 @@ public class Patient {
     private String contactNumber;
     private String password;
     private String role;
+    private String birthday;
+    private String address;
+    private String bloodGroup;
+    private String gender;
+    private double height;
+    private double weight;
+    private String allergy;
+    private String profilePicture;
+
 
     public Patient(String firstName, String lastName, String email, String nic, String contactNumber, String password) {
         this.firstName = firstName;
@@ -29,6 +38,26 @@ public class Patient {
         this.nic = nic;
         this.contactNumber = contactNumber;
         this.password = password;
+    }
+
+    public Patient(long mediId, String firstName, String lastName, String email, String nic, String contactNumber, String password, String role, String birthday, String address, String bloodGroup, String gender, double height, double weight, String allergy, String profilePicture, List<MedicalNotes> medicalNotes) {
+        this.mediId = mediId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.nic = nic;
+        this.contactNumber = contactNumber;
+        this.password = password;
+        this.role = role;
+        this.birthday = birthday;
+        this.address = address;
+        this.bloodGroup = bloodGroup;
+        this.gender = gender;
+        this.height = height;
+        this.weight = weight;
+        this.allergy = allergy;
+        this.profilePicture = profilePicture;
+        this.medicalNotes = medicalNotes;
     }
 
     public Patient() {
@@ -109,5 +138,69 @@ public class Patient {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public void setBloodGroup(String bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public String getAllergy() {
+        return allergy;
+    }
+
+    public void setAllergy(String allergy) {
+        this.allergy = allergy;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }
