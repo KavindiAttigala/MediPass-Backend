@@ -44,7 +44,7 @@ public class PatientController {
         patientService.deletePatient(id);
         return ResponseEntity.noContent().build();
     }
-    
+
     @ApiOperation(value = "Change password by verifying existing password")
     @PostMapping("/change-password")
     public ResponseEntity<String> changePassword(@RequestParam long mediId,
