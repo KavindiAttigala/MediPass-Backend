@@ -33,12 +33,13 @@ public class GuestDoctorController {
             return ResponseEntity.badRequest().body("Invalid MediID");
         }
 
-        String email = patientOptional.get(0).getEmail();
-        if(!otpService.verifyOTP(otp, email)){
+        //verify OTP access
+        if(!otpService.verifyOTP(mediId,otp)){
             return ResponseEntity.badRequest().body("Invalid OTP");
         }
 
-        guestDoctorService.saveDoctor(guestDoctor);
-        return ResponseEntity.ok("Doctor login is authorized.");
+        //each guest doctor session is stored before adding medical notes
+        GuestDoctor savedDoctor = guestDoctorService.saveDoctor(guestDoctor);
+        return ResponseEntity.ok(String.valueOf(savedDoctor));
     }
 }
