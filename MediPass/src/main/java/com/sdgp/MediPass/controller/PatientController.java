@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/patient")
@@ -22,9 +22,9 @@ public class PatientController {
     @ApiOperation(value = "Retrieve Patient Profile", notes = "Get patient details by MediID")
     @GetMapping("/{mediId}")
     public ResponseEntity<Patient> getPatientById(@PathVariable long mediId) {
-        List<Patient> patients = patientService.getPatientByMediId(mediId);
+        Optional<Patient> patients = patientService.getPatientByMediId(mediId);
         if (!patients.isEmpty()) {
-            return ResponseEntity.ok(patients.get(0)); // Return the first patient
+            return ResponseEntity.ok(patients.get()); // Return the first patient
         }
         return ResponseEntity.notFound().build();
     }

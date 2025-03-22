@@ -56,9 +56,9 @@ public class AuthController {
             ));
         }
 
-        List<Patient> patientList = patientService.getPatientByMediId(request.getMediId());
+        Optional<Patient> patientList = patientService.getPatientByMediId(request.getMediId());
         if (!patientList.isEmpty()) {
-            Patient patient = patientList.get(0);
+            Patient patient = patientList.get();
             if (passwordEncoder.matches(request.getPassword(), patient.getPassword())) {
                 return ResponseEntity.ok(patient);
             }

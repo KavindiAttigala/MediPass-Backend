@@ -23,9 +23,12 @@ public class Patient {
     private String address;
     private String bloodGroup;
     private String gender;
+    @Column(columnDefinition = "double precision")
     private double height;
+    @Column(columnDefinition = "double precision")
     private double weight;
     private String allergy;
+    @Column(columnDefinition = "TEXT")
     @Lob
     private String profilePicture;
 
