@@ -39,17 +39,9 @@ public class PatientService {
         patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
         return patientRepository.save(patient);
     }
+
     public List<String> login(long mediId, String password) {
-        Optional<Patient> patients = patientRepository.findByMediId(mediId);
-
-        if (patients != null && !patients.isEmpty()) {
-            Patient patient = patients.get(); // Assuming mediId is unique
-// =======
-
-//     public List<String> login(long mediId, String password) {
-//         Optional<Patient> patientOpt = patientRepository.findByMediId(mediId);
-// >>>>>>> main
-
+        Optional<Patient> patientOpt = patientRepository.findByMediId(mediId);
         if (patientOpt.isPresent()) {
             Patient patient = patientOpt.get();
             if (passwordEncoder.matches(password, patient.getPassword())) {
@@ -88,9 +80,11 @@ public class PatientService {
             return patientRepository.save(patient);
         }).orElse(null);
     }
+
     public void deletePatient(long id) {
         patientRepository.deleteById(id);
     }
+
 
     public String verifyUserAndGetEmail(String nic, long mediId) {
         // Fetch the patient by NIC and MediID
