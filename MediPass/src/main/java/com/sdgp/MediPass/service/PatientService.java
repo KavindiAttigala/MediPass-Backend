@@ -40,27 +40,33 @@ public class PatientService {
         return patientRepository.save(patient);
     }
     public List<String> login(long mediId, String password) {
-        Optional<Patient> patients = patientRepository.findByMediId(mediId);
+        List<Patient> patients = patientRepository.findByMediId(mediId);
 
         if (patients != null && !patients.isEmpty()) {
-            Patient patient = patients.get(); // Assuming mediId is unique
+            Patient patient = patients.get(0);
+            if (passwordEncoder.matches(password, patient.getPassword())) {
+                String token = JwtUtil.generateToken(String.valueOf(mediId));
+                return List.of(token);
+            }// Assuming mediId is unique
 // =======
 
 //     public List<String> login(long mediId, String password) {
 //         Optional<Patient> patientOpt = patientRepository.findByMediId(mediId);
 // >>>>>>> main
 
-        if (patientOpt.isPresent()) {
-            Patient patient = patientOpt.get();
-            if (passwordEncoder.matches(password, patient.getPassword())) {
-                String token = JwtUtil.generateToken(String.valueOf(mediId));
-                return List.of(token);
-            }
+//            if (patient.is) {
+//                Patient patient = patientOpt.get();
+//                if (passwordEncoder.matches(password, patient.getPassword())) {
+//                    String token = JwtUtil.generateToken(String.valueOf(mediId));
+//                    return List.of(token);
+//                }
+//            }
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
+        return null;
     }
 
-    public Optional<Patient> getPatientByMediId(Long mediId) {
+    public List<Patient> getPatientByMediId(Long mediId) {
         return patientRepository.findByMediId(mediId);
     }
 
@@ -106,9 +112,9 @@ public class PatientService {
     // Update password method with encryption for the new password.
 
     public boolean updatePassword(Long mediId, String newPassword) {
-        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
-        if (patientOptional.isPresent()) {
-            Patient patient = patientOptional.get();
+        List<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        if (!patientOptional.isEmpty()) {
+            Patient patient = patientOptional.get(0);
             patient.setPassword(passwordEncoder.encode(newPassword)); // Encrypt new password
             patientRepository.save(patient);
             return true;
@@ -116,20 +122,20 @@ public class PatientService {
         return false;
     }
     public boolean verifyOldPassword(Long mediId, String oldPassword) {
-        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        List<Patient> patientOptional = patientRepository.findByMediId(mediId);
         if (patientOptional.isEmpty()) {
             return false;   // Invalid MediID
         }
-        Patient patient = patientOptional.get();
+        Patient patient = patientOptional.get(0);
         return passwordEncoder.matches(oldPassword, patient.getPassword());
     }
 
     public boolean changePassword(Long mediId, String oldPassword, String newPassword) {
-        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        List<Patient> patientOptional = patientRepository.findByMediId(mediId);
         if (patientOptional.isEmpty()) {
             return false;
         }
-        Patient patient = patientOptional.get();
+        Patient patient = patientOptional.get(0);
 
         // Verify the existing password before updating
         if (!verifyOldPassword(mediId, oldPassword)) {

@@ -18,6 +18,7 @@ public class CalendarReminder {
     private LocalDateTime endTime;
     private String email;
 
+    private long mediID;
     @ManyToOne
     @JoinColumn (name="mediIDcalendar", nullable = false)
     private Patient patient;
@@ -79,5 +80,13 @@ public class CalendarReminder {
 
     public boolean isReminderSent() {
         return reminderSent;
+    }
+
+    public long getMediID() {
+        return mediID;
+    }
+
+    public void setMediID(long mediID) {
+        this.mediID = mediID;
     }
 }
