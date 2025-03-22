@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/patient")
@@ -21,8 +22,11 @@ public class PatientController {
     @ApiOperation(value = "Retrieve Patient Profile", notes = "Get patient details by MediID")
     @GetMapping("/{mediId}")
     public ResponseEntity<Patient> getPatientById(@PathVariable long mediId) {
-        Optional<Patient> patient = patientService.getPatientByMediId(mediId);
-        return patient.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        List<Patient> patients = patientService.getPatientByMediId(mediId);
+        if (!patients.isEmpty()) {
+            return ResponseEntity.ok(patients.get(0)); // Return the first patient
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @ApiOperation(value = "Create Patient Profile", notes = "Save new patient details")
@@ -47,9 +51,7 @@ public class PatientController {
 
     @ApiOperation(value = "Change password by verifying existing password")
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestParam long mediId,
-                                                 @RequestParam String oldPassword,
-                                                 @RequestParam String newPassword) {
+    public ResponseEntity<String> changePassword(@RequestParam long mediId, @RequestParam String oldPassword, @RequestParam String newPassword) {
         boolean change = patientService.changePassword(mediId, oldPassword, newPassword);
         if (change) {
             return ResponseEntity.ok("Password changed");

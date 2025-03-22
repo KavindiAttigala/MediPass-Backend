@@ -37,7 +37,6 @@ public class MedicalNotesController {
     }
 
     //ResponseEntity<?> is a generic return type to send HTTP responses (HTTP status code, Response body, Headers)
-
     @ApiOperation(value = "Retrieving the medical notes")
     @GetMapping("/{mediID}")
     public ResponseEntity<?> getMedicalNotes(@PathVariable Long mediId){

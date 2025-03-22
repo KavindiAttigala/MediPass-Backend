@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -27,17 +28,18 @@ public class GuestDoctorController {
     @ApiOperation(value = "Storing guest doctor login info in the DB")
     @PostMapping("/access")
     public ResponseEntity<String> doctorAccess(@RequestParam long mediId, @RequestParam String otp, @RequestBody GuestDoctor guestDoctor){
-        Optional<Patient> patientOptional =patientService.getUserByMediId(mediId);
+        List<Patient> patientOptional =patientService.getPatientByMediId(mediId);
         if(patientOptional.isEmpty()){
             return ResponseEntity.badRequest().body("Invalid MediID");
         }
 
-        String email = patientOptional.get().getEmail();
-        if(!otpService.verifyOTP(otp, email)){
+        //verify OTP access
+        if(!otpService.verifyOTP(mediId,otp)){
             return ResponseEntity.badRequest().body("Invalid OTP");
         }
 
-        guestDoctorService.saveDoctor(guestDoctor);
-        return ResponseEntity.ok("Doctor login is authorized.");
+        //each guest doctor session is stored before adding medical notes
+        GuestDoctor savedDoctor = guestDoctorService.saveDoctor(guestDoctor);
+        return ResponseEntity.ok(String.valueOf(savedDoctor));
     }
 }

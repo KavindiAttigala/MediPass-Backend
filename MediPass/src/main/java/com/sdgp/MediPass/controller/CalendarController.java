@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/calendar-reminders")
@@ -31,5 +32,12 @@ public class CalendarController {
     public ResponseEntity<String> deleteReminder(@RequestParam Long reminderId) {
         calendarService.deleteReminder(reminderId);
         return ResponseEntity.ok("Reminder deleted successfully");
+    }
+
+    @ApiOperation(value = "Get all reminders for a specific MediID")
+    @GetMapping("/get")
+    public ResponseEntity<List<CalendarReminder>> getReminders(@RequestParam Long mediID) {
+        List<CalendarReminder> reminders = calendarService.getReminders(mediID);
+        return ResponseEntity.ok(reminders);
     }
 }

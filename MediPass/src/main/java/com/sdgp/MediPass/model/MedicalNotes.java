@@ -13,11 +13,11 @@ public class MedicalNotes {
     private Long id;
 
     @ManyToOne
-    @JoinColumn (name="mediIDnotes", nullable = false)
+    @JoinColumn (name="patientId", nullable = false)      // Foreign key for patient
     private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "guestDoctorId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "guestDoctorId", referencedColumnName = "id", nullable = false)      // Foreign key for guestDoctor
     private GuestDoctor guestDoctor;
 
     private LocalDate date;

@@ -5,6 +5,7 @@ import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.repository.CalendarRepository;
 import com.sdgp.MediPass.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,12 +27,12 @@ public class CalendarService {
     //schedule events and save it in the DB
     public CalendarReminder addReminder(String description, String start, String end, String email, long mediId){
         // Fetch Patient using mediID
-        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        List<Patient> patientOptional = patientRepository.findByMediId(mediId);
         if(patientOptional.isEmpty()){
             throw new IllegalArgumentException("Patient with mediId: "+ mediId+" not found.");
         }
 
-        Patient patient = patientOptional.get();
+        Patient patient = patientOptional.get(0);
 
         CalendarReminder calendarReminder = new CalendarReminder();
         calendarReminder.setDescription(description);
@@ -39,11 +40,13 @@ public class CalendarService {
         calendarReminder.setEndTime(LocalDateTime.parse(end));
         calendarReminder.setEmail(email);
         calendarReminder.setReminderSent(false);
+        calendarReminder.setPatient(patient);
 
         return calendarRepository.save(calendarReminder);
     }
 
-    //scheduled task to send reminders
+    //scheduled task to send reminders(runs every hour)
+    @Scheduled(fixedRate = 3600000) // Runs every hour
     public void sendReminders(){
         LocalDateTime now = LocalDateTime.now();
         List<CalendarReminder> reminder = calendarRepository.findAll();     //Retrieve all scheduled reminders from the database
@@ -82,4 +85,7 @@ public class CalendarService {
         calendarRepository.delete(reminderOptional.get());
     }
 
+    public List<CalendarReminder> getReminders(Long mediID) {
+        return calendarRepository.findByMediID(mediID);
+    }
 }

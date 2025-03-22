@@ -58,4 +58,17 @@ public class ChronicDiseaseService {
         return chroDiseRepo.findByPatient(patientOptional.get());
     }
 
+    public List<String> getMedications(long mediId, String diseaseName) {
+        Optional<Patient> patientOptional = patientRepo.findById(mediId);
+        if (patientOptional.isEmpty()) {
+            throw new IllegalArgumentException("Patient with mediId " + mediId + " not found.");
+        }
+
+        List<ChronicDisease> diseases = chroDiseRepo.findByMediIdAndDiseaseName(mediId, diseaseName);
+        return diseases.stream()
+                .map(ChronicDisease::getMedication)
+                .filter(medication -> medication != null && !medication.isEmpty())
+                .toList();
+    }
+
 }
