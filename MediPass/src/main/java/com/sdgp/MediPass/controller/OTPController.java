@@ -71,7 +71,7 @@ public class OTPController {
         if(patient.isEmpty()){
             return ResponseEntity.badRequest().body("Invalid mediId or OTP");
         }
-        
+
         return otpService.verifyOTP(mediId,otp)
                 ? ResponseEntity.ok("OTP Verified")         //If verifyOTP() returns true
                 : ResponseEntity.badRequest().body("Invalid OTP");

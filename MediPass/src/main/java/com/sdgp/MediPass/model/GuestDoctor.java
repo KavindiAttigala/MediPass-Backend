@@ -9,7 +9,7 @@ import java.util.List;
 public class GuestDoctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long docId;
 
     private String docName;
     private String specialization;
@@ -29,12 +29,12 @@ public class GuestDoctor {
         this.medicalNotes = medicalNotes;
     }
 
-    public long getId() {
-        return id;
+    public long getDocId() {
+        return docId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setDocId(long docId) {
+        this.docId = docId;
     }
 
     public String getDocName() {
