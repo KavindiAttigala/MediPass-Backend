@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -66,13 +67,16 @@ public class OTPController {
     @ApiOperation(value = "Verify the OTP for the doctor login")
     @PostMapping("/doctor-access")
     //verify the doctor login OTP
+
     public ResponseEntity<String> verifyDoctorAccessOTP(@RequestParam long mediId, @RequestParam String otp){
         Optional<Patient> patient = patientService.getUserByMediId(mediId);
+
         if(patient.isEmpty()){
             return ResponseEntity.badRequest().body("Invalid mediId or OTP");
         }
 
         return otpService.verifyOTP(mediId,otp)
+
                 ? ResponseEntity.ok("OTP Verified")         //If verifyOTP() returns true
                 : ResponseEntity.badRequest().body("Invalid OTP");
 

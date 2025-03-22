@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,11 +41,11 @@ public class OTPService {
 
     //Send OTP for doctor login access
     public String sendDoctorAccessOTP(Long mediId){
-        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        List<Patient> patientOptional = patientRepository.findByMediId(mediId);
         if(patientOptional.isEmpty()){
             throw new RuntimeException("Invalid MediID");
         }
-        String email = patientOptional.get().getEmail();
+        String email = patientOptional.get(0).getEmail();
         String otp = generateOTP();
         otpStorage.put(mediId, otp);
 

@@ -23,6 +23,7 @@ public class ChronicDisease {
     @Column(name = "end_time")
     private LocalDate endDate;
     private LocalDate date;
+    private long mediId;
 
     public long getId() {
         return id;
@@ -86,5 +87,13 @@ public class ChronicDisease {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public long getMediId() {
+        return mediId;
+    }
+
+    public void setMediId(long mediId) {
+        this.mediId = mediId;
     }
 }

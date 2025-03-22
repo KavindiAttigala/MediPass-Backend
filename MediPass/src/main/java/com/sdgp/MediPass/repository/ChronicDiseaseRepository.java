@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface ChronicDiseaseRepository extends JpaRepository<ChronicDisease, Integer> {
     List<ChronicDisease> findByPatient(Patient patient);
 
-    List<ChronicDisease> findByMediIdAndDisease(long mediId, String diseaseName);
+    List<ChronicDisease> findByMediIdAndDiseaseName(long mediId, String diseaseName);
 }

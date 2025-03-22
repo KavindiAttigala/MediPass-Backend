@@ -9,12 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -48,17 +46,26 @@ public class AuthController {
     @ApiOperation(value = "Authenticate login")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        Optional<Patient> patientList = patientService.getUserByMediId(request.getMediId());
+        List<String> response = patientService.login(request.getMediId(), request.getPassword());
+
+        if (!response.isEmpty()) {
+            return ResponseEntity.ok(Map.of(
+                    "token", response.get(0),
+                    "mediId", request.getMediId(),
+                    "message", "Login successful"
+            ));
+        }
+
+        List<Patient> patientList = patientService.getPatientByMediId(request.getMediId());
         if (!patientList.isEmpty()) {
-            Patient patient = patientList.get();
+            Patient patient = patientList.get(0);
             if (passwordEncoder.matches(request.getPassword(), patient.getPassword())) {
                 return ResponseEntity.ok(patient);
             }
         }
+
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
-
-
 }
 
 
