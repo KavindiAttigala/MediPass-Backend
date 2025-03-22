@@ -19,6 +19,7 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
 
+    @ApiOperation(value = "Retrieve Patient Profile", notes = "Get patient details by MediID")
     @GetMapping("/{mediId}")
     public ResponseEntity<Patient> getPatientById(@PathVariable long mediId) {
         List<Patient> patients = patientService.getPatientByMediId(mediId);
@@ -28,26 +29,25 @@ public class PatientController {
         return ResponseEntity.notFound().build();
     }
 
+    @ApiOperation(value = "Create Patient Profile", notes = "Save new patient details")
+    @PostMapping
+    public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
+        Patient savedPatient = patientService.savePatient(patient);
+        return ResponseEntity.ok(savedPatient);
+    }
+
     @ApiOperation(value= "Update Patient Profile", notes= "Update patient details based on MediID")
-//    @PutMapping("/{mediId}")
-//    public ResponseEntity<?> updateUserProfile(@PathVariable Long mediId, @RequestBody Patient updatedPatient) {
-//        Optional<Patient> patientsList = patientService.getUserByMediId(mediId);
-//        if (!patientsList.isEmpty()) {
-//            Patient patient = patientsList.get(); // Retrieve the first patient from the list
-//            patient.setFirstName(updatedPatient.getFirstName());
-//            patient.setLastName(updatedPatient.getLastName());
-//            patient.setContactNumber(updatedPatient.getContactNumber());
-//            patientService.updatePatient(patient); // Ensure you have an update method in your service
-//            return ResponseEntity.ok(patient);
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
     @PutMapping("/{id}")
     public ResponseEntity<Patient> updatePatient(@PathVariable long id, @RequestBody Patient updatedPatient) {
         Patient patient = patientService.updatePatient(id, updatedPatient);
         return patient != null ? ResponseEntity.ok(patient) : ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePatient(@PathVariable long id) {
+        patientService.deletePatient(id);
+        return ResponseEntity.noContent().build();
+    }
 
     @ApiOperation(value = "Change password by verifying existing password")
     @PostMapping("/change-password")
@@ -59,16 +59,4 @@ public class PatientController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePatient(@PathVariable long id) {
-        patientService.deletePatient(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping
-    public Patient createPatient(@RequestBody Patient patient) {
-        return patientService.savePatient(patient);
-    }
-
 }

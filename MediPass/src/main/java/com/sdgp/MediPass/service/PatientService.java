@@ -39,29 +39,19 @@ public class PatientService {
         patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
         return patientRepository.save(patient);
     }
-    public List<String> login(long mediId, String password) {
-        List<Patient> patients = patientRepository.findByMediId(mediId);
 
-        if (patients != null && !patients.isEmpty()) {
-            Patient patient = patients.get(0);
+
+    public List<String> login(long mediId, String password) {
+        Optional<Patient> patientOpt = patientRepository.findByMediId(mediId);
+        if (patientOpt.isPresent()) {
+            Patient patient = patientOpt.get();
             if (passwordEncoder.matches(password, patient.getPassword())) {
                 String token = JwtUtil.generateToken(String.valueOf(mediId));
                 return List.of(token);
-            }// Assuming mediId is unique
-// =======
+            }
+        }
+        return Collections.emptyList();
 
-//     public List<String> login(long mediId, String password) {
-//         Optional<Patient> patientOpt = patientRepository.findByMediId(mediId);
-// >>>>>>> main
-
-//            if (patient.is) {
-//                Patient patient = patientOpt.get();
-//                if (passwordEncoder.matches(password, patient.getPassword())) {
-//                    String token = JwtUtil.generateToken(String.valueOf(mediId));
-//                    return List.of(token);
-//                }
-//            }
-            return Collections.emptyList();
         }
         return null;
     }
@@ -94,9 +84,11 @@ public class PatientService {
             return patientRepository.save(patient);
         }).orElse(null);
     }
+
     public void deletePatient(long id) {
         patientRepository.deleteById(id);
     }
+
 
     public String verifyUserAndGetEmail(String nic, long mediId) {
         // Fetch the patient by NIC and MediID
@@ -146,5 +138,9 @@ public class PatientService {
         patient.setPassword(passwordEncoder.encode(newPassword));
         patientRepository.save(patient);
         return true;
+    }
+
+    public Optional<Patient> getUserByMediId(long mediId) {
+        return patientRepository.findByMediId(mediId);
     }
 }

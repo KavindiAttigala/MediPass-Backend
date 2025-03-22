@@ -2,8 +2,6 @@ package com.sdgp.MediPass.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
-
-import javax.annotation.processing.Generated;
 import java.util.List;
 
 @Entity
@@ -28,6 +26,7 @@ public class Patient {
     private double height;
     private double weight;
     private String allergy;
+    @Lob
     private String profilePicture;
 
 
