@@ -17,9 +17,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class MedicalNotesService {
@@ -42,11 +40,17 @@ public class MedicalNotesService {
             throw new IllegalArgumentException("Patient with mediId "+ id+" not found.");
         }
 
-        Optional<GuestDoctor> guestDoctorOptional = guestDoctorRepo.findById(id);
+        // Fetch the most recent guest doctor entry
+        Optional<GuestDoctor> guestDoctorOptional = guestDoctorRepo.findTopByOrderByIdDesc();
+        if (guestDoctorOptional.isEmpty()) {
+            throw new IllegalArgumentException("No Doctor information found for this session.");
+        }
+
+        GuestDoctor guestDoctor = guestDoctorOptional.get();
 
         MedicalNotes note = new MedicalNotes();
         note.setPatient(patientOptional.get());
-        note.setGuestDoctor(guestDoctorOptional.get());
+        note.setGuestDoctor(guestDoctor);
         note.setDate(LocalDate.now());
         note.setTextContent(textContent);
 
@@ -59,18 +63,21 @@ public class MedicalNotesService {
             note.setFileName(file.getOriginalFilename());
             note.setFileType(file.getContentType());
             note.setFilePath(filePath.toString());
-
         }
 
         return notesRepo.save(note);
-
     }
 
-    public List<MedicalNotes> getNotes(Long mediId){
+    public List<MedicalNotes> getNotes(Long mediId) {
+        // Fetch the patient by mediId from the repository
         Optional<Patient> patientOptional = patientRepo.findById(mediId);
-        if(patientOptional.isEmpty()){
+        if (patientOptional.isEmpty()) {
             throw new IllegalArgumentException("Patient with mediId " + mediId + " not found.");
         }
-        return notesRepo.findByPatient(patientOptional.get());
+
+        // Fetch all medical notes for the given patient
+        List<MedicalNotes> notes = notesRepo.findByPatientId(patientOptional.get().getMediId());
+
+        return notes;
     }
 }
