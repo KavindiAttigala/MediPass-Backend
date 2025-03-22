@@ -64,7 +64,7 @@ public class ChronicDiseaseService {
             throw new IllegalArgumentException("Patient with mediId " + mediId + " not found.");
         }
 
-        List<ChronicDisease> diseases = chroDiseRepo.findByMediIdAndDisease(mediId, diseaseName);
+        List<ChronicDisease> diseases = chroDiseRepo.findByMediIdAndDiseaseName(mediId, diseaseName);
         return diseases.stream()
                 .map(ChronicDisease::getMedication)
                 .filter(medication -> medication != null && !medication.isEmpty())
