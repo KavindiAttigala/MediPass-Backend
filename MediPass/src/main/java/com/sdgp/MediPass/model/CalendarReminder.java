@@ -9,13 +9,12 @@ import java.time.LocalDateTime;
 public class CalendarReminder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long reminderId;
 
     private String description;
-    @Column(name = "start_time")
-    private LocalDateTime startTime;
-    @Column(name = "end_time")
-    private LocalDateTime endTime;
+    @Column(name = "scheulded_time")
+    private LocalDateTime scheduledTime;
+
     private String email;
 
     private long mediID;
@@ -26,36 +25,28 @@ public class CalendarReminder {
     @Column(name = "reminder_sent")
     private boolean reminderSent;   // To avoid sending multiple reminders
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getReminderId() {
+        return reminderId;
+    }
+
+    public void setReminderId(Long reminderId) {
+        this.reminderId = reminderId;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getDescription() {
         return description;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public LocalDateTime getScheduledTime() {
+        return scheduledTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
+    public void setScheduledTime(LocalDateTime scheduledTime) {
+        this.scheduledTime = scheduledTime;
     }
 
     public Patient getPatient() {
