@@ -17,7 +17,7 @@ public class MedicalNotes {
     private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "guestDoctorId", referencedColumnName = "id", nullable = false)      // Foreign key for guestDoctor
+    @JoinColumn(name = "guestDoctorId", referencedColumnName = "docId", nullable = false)      // Foreign key for guestDoctor
     private GuestDoctor guestDoctor;
 
     private LocalDate date;

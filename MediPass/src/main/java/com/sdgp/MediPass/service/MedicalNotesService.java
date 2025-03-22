@@ -41,7 +41,7 @@ public class MedicalNotesService {
         }
 
         // Fetch the most recent guest doctor entry
-        Optional<GuestDoctor> guestDoctorOptional = guestDoctorRepo.findTopByOrderByIdDesc();
+        Optional<GuestDoctor> guestDoctorOptional = guestDoctorRepo.findTopByOrderByDocIdDesc();
         if (guestDoctorOptional.isEmpty()) {
             throw new IllegalArgumentException("No Doctor information found for this session.");
         }
@@ -76,7 +76,7 @@ public class MedicalNotesService {
         }
 
         // Fetch all medical notes for the given patient
-        List<MedicalNotes> notes = notesRepo.findByPatientId(patientOptional.get().getMediId());
+        List<MedicalNotes> notes = notesRepo.findByPatientMediId(patientOptional.get().getMediId());
 
         return notes;
     }
