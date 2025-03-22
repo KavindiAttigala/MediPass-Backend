@@ -21,7 +21,7 @@ public class OTPService {
     private PatientRepository patientRepository;
 
     //to store the generated OTP temporarily in key-value pairs to verify the OTP (the email is stored as the key)
-    private final Map<String, String> otpStorage = new HashMap<>();
+    private final Map<Long, String> otpStorage = new HashMap<>();
 
     //find the relevant email through nic and mediId
     public String sendOTP(String nic, long mediId){
@@ -31,7 +31,7 @@ public class OTPService {
         }
         String email = patientOptional.get().getEmail();
         String otp = generateOTP();
-        otpStorage.put(email, otp);   //stores otp temporarily and send it via email
+        otpStorage.put(mediId, otp);   //stores otp temporarily and send it via email
 
         sendEmail(email, otp);
         return "OTP sent successfully to the mail relevant for the mediId "+ mediId;
@@ -46,7 +46,7 @@ public class OTPService {
         }
         String email = patientOptional.get().getEmail();
         String otp = generateOTP();
-        otpStorage.put(email, otp);
+        otpStorage.put(mediId, otp);
 
         sendEmail(email, otp);
         return "OTP sent to the email revelant for the mediId "+ mediId;
@@ -57,22 +57,23 @@ public class OTPService {
     public String generateOTP(){
         SecureRandom random = new SecureRandom();
         int otp = random.nextInt(9999);     //generates a random integer between 0 and 9999(inclusive)
-        return String.format("%04d"+otp);    //"%04d" ensures the generated number is always 4 digits
+        return String.format("%04d",otp);    //"%04d" ensures the generated number is always 4 digits
     }
 
     //send the email the to the relevant patient
     private void sendEmail(String email, String otp){
         SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(email);
         msg.setSubject("Your OTP code");
-        msg.setText("""
-                We have received a request to reset your MediPass account password. Use the following OTP code to reset yoru password. We advice you to not share this OTP with anyone./n""");
-        msg.setText("Your OTP code is: "+otp);
+        msg.setText(" We have received a request to reset your MediPass account password."
+                + " Use the following OTP code to reset yoru password. We advice you to not share this OTP with anyone.\n\n"
+                + "Your OTP code is: "+otp);
         mailSender.send(msg);
     }
 
     //verify the otp
-    public boolean verifyOTP(String email, String otp){
+    public boolean verifyOTP(long mediId, String otp){
         //checks whether map contains an OTP for the given email AND whether the given OTP matches with the one stored in the map
-        return otpStorage.containsKey(email) && otpStorage.get(email).equals(otp);
+        return otpStorage.containsKey(mediId) && otpStorage.get(mediId).equals(otp);
     }
 }

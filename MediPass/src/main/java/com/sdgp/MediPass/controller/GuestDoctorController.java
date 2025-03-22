@@ -33,7 +33,7 @@ public class GuestDoctorController {
         }
 
         String email = patientOptional.get().getEmail();
-        if(!otpService.verifyOTP(otp, email)){
+        if(!otpService.verifyOTP(mediId,otp)){
             return ResponseEntity.badRequest().body("Invalid OTP");
         }
 

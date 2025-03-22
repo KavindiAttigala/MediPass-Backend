@@ -27,12 +27,7 @@ public class OTPController {
     //send OTP when forgot password case by verifying the user using the NIC and MediID
     public ResponseEntity<String> sendOTP(@RequestParam String nic, @RequestParam long mediId){
         try {
-            String email = patientService.verifyUserAndGetEmail(nic, mediId);
-            if (email == null) {
-                return ResponseEntity.badRequest().body("User not found or invalid NIC/MediID.");
-            }
-            otpService.sendOTP(nic, mediId);
-            return ResponseEntity.ok("OTP sent to " + email);
+            return ResponseEntity.ok(otpService.sendOTP(nic, mediId));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -41,19 +36,16 @@ public class OTPController {
     @ApiOperation(value = "Verify OTP sent to user's email")
     @PostMapping("/verifyOTP")
     //verify the OTP sent to the user
-    public ResponseEntity<String> verifyOTP(@RequestParam String email, @RequestParam String otp) {
-        return otpService.verifyOTP(email, otp)
+    public ResponseEntity<String> verifyOTP(@RequestParam long mediId, @RequestParam String otp) {
+        return otpService.verifyOTP(mediId, otp)
                 ? ResponseEntity.ok("OTP Verified")         //If verifyOTP() returns true
-                : ResponseEntity.badRequest().body("Invalid OTP");          //If verifyOTP(email, otp) returns false
+                : ResponseEntity.badRequest().body("Invalid OTP");          //If verifyOTP() returns false
     }
 
     @ApiOperation(value = "Reset password after OTP verification")
     @PostMapping("/reset-password")
     //update the new password
-    public ResponseEntity<String> resetPassword(@RequestParam long mediId, @RequestParam String email, @RequestParam String otp, @RequestParam String newPassword) {
-        if (!otpService.verifyOTP(email, otp)) {
-            return ResponseEntity.badRequest().body("Invalid OTP");
-        }
+    public ResponseEntity<String> resetPassword(@RequestParam long mediId, @RequestParam String newPassword) {
         boolean passwordUpdated = patientService.updatePassword(mediId, newPassword);
         return passwordUpdated
                 ? ResponseEntity.ok("Password reset successfully")          //If updatePassword() returns true
@@ -74,14 +66,13 @@ public class OTPController {
     @ApiOperation(value = "Verify the OTP for the doctor login")
     @PostMapping("/doctor-access")
     //verify the doctor login OTP
-    public ResponseEntity<String> verfyDoctorAccessOTP(@RequestParam long mediId, @RequestParam String otp){
+    public ResponseEntity<String> verifyDoctorAccessOTP(@RequestParam long mediId, @RequestParam String otp){
         Optional<Patient> patient = patientService.getUserByMediId(mediId);
         if(patient.isEmpty()){
             return ResponseEntity.badRequest().body("Invalid mediId or OTP");
         }
-
-        String email = patient.get().getEmail();
-        return otpService.verifyOTP(email,otp)
+        
+        return otpService.verifyOTP(mediId,otp)
                 ? ResponseEntity.ok("OTP Verified")         //If verifyOTP() returns true
                 : ResponseEntity.badRequest().body("Invalid OTP");
 
