@@ -135,4 +135,8 @@ public class PatientService {
         patientRepository.save(patient);
         return true;
     }
+
+    public Optional<Patient> getUserByMediId(long mediId) {
+        return patientRepository.findByMediId(mediId);
+    }
 }
