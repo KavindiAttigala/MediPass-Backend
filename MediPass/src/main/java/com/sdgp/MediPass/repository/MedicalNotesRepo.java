@@ -9,5 +9,5 @@ import java.util.List;
 public interface MedicalNotesRepo extends JpaRepository<MedicalNotes, Long> {
     List<MedicalNotes> findByPatient(Patient patient);
 
-    List<MedicalNotes> findByPatientId(Long mediId);
+    List<MedicalNotes> findByPatientMediId(Long mediId);
 }

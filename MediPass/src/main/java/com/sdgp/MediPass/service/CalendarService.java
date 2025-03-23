@@ -25,20 +25,20 @@ public class CalendarService {
     private PatientRepository patientRepository;
 
     //schedule events and save it in the DB
-    public CalendarReminder addReminder(String description, String start, String end, String email, long mediId){
+    public CalendarReminder addReminder(String description, LocalDateTime scheduledTime, long mediId){
         // Fetch Patient using mediID
-        List<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
         if(patientOptional.isEmpty()){
             throw new IllegalArgumentException("Patient with mediId: "+ mediId+" not found.");
         }
 
-        Patient patient = patientOptional.get(0);
+        Patient patient = patientOptional.get();
 
         CalendarReminder calendarReminder = new CalendarReminder();
+
         calendarReminder.setDescription(description);
-        calendarReminder.setStartTime(LocalDateTime.parse(start));
-        calendarReminder.setEndTime(LocalDateTime.parse(end));
-        calendarReminder.setEmail(email);
+        calendarReminder.setScheduledTime(scheduledTime);
+        calendarReminder.setEmail(patient.getEmail());
         calendarReminder.setReminderSent(false);
         calendarReminder.setPatient(patient);
 
@@ -47,23 +47,26 @@ public class CalendarService {
 
     //scheduled task to send reminders(runs every hour)
     @Scheduled(fixedRate = 3600000) // Runs every hour
-    public void sendReminders(){
+    public void sendReminders(long reminderId){
         LocalDateTime now = LocalDateTime.now();
         List<CalendarReminder> reminder = calendarRepository.findAll();     //Retrieve all scheduled reminders from the database
 
+        if (reminder.isEmpty()) {
+            throw new IllegalArgumentException("Reminder with ID " + reminderId + " not found.");
+        }
+
         //foreach loop to iterate through the list of reminders ('reminder')
         for(CalendarReminder calendarReminder: reminder){
-
             boolean updated = false;
 
             //check for 1 day reminder
-            if(!calendarReminder.isReminderSent() && calendarReminder.getStartTime().minusDays(1).isBefore(now)){
+            if(!calendarReminder.isReminderSent() && calendarReminder.getScheduledTime().minusDays(1).isBefore(now)){
                 emailService.sendEmail(calendarReminder.getEmail(), "Reminder "," Your scheduled event is in 1 day");
                 updated = true;
             }
 
             //check for 6 hour reminder
-            if(!calendarReminder.isReminderSent() && calendarReminder.getStartTime().minusHours(6).isBefore(now)){
+            if(!calendarReminder.isReminderSent() && calendarReminder.getScheduledTime().minusHours(6).isBefore(now)){
                 emailService.sendEmail(calendarReminder.getEmail(), "Reminder", "Your scheduled event is in 6 hours");
                 updated = true;
             }
@@ -76,10 +79,10 @@ public class CalendarService {
         }
     }
 
-    public void deleteReminder(long id){
-        Optional<CalendarReminder> reminderOptional = calendarRepository.findById(id);
+    public void deleteReminder(long reminderId){
+        Optional<CalendarReminder> reminderOptional = calendarRepository.findById(reminderId);
         if(reminderOptional.isEmpty()){
-            throw new IllegalArgumentException("Reminder with mediId "+ id+" not found.");
+            throw new IllegalArgumentException("Reminder with mediId "+ reminderId+" not found.");
         }
 
         calendarRepository.delete(reminderOptional.get());
