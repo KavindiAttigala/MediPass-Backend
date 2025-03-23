@@ -20,14 +20,14 @@ public class VaccinationRecordController {
     private VaccinationRecordService vaccinationRecordService;
 
     @ApiOperation(value = "Storing vaccination records")
-    @PostMapping
+    @PostMapping("/add-V-records")
     public ResponseEntity<VaccinationRecords> addVaccinationRecords(@RequestBody VaccinationRecords bloodDonation){
         VaccinationRecords savedRecords= vaccinationRecordService.addVaccinationRecords(bloodDonation);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecords);
     }
 
     @ApiOperation(value = "Retrieving vaccination records")
-    @GetMapping
+    @GetMapping("/get-V-records")
     public ResponseEntity<List<VaccinationRecords>> getAllVaccinationRecords(){
         return ResponseEntity.ok(vaccinationRecordService.getAllVaccinationRecords());
     }
