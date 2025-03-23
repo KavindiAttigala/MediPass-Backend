@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/medipass/auth")
 @Api(value="Authentication", description="Authenticating the login")
 public class AuthController {
 
@@ -45,27 +45,55 @@ public class AuthController {
 
     @ApiOperation(value = "Authenticate login")
     @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+//        List<String> response = patientService.login(request.getMediId(), request.getPassword());
+//
+//        if (!response.isEmpty()) {
+//            return ResponseEntity.ok(Map.of(
+//                    "token", response.get(0),
+//                    "mediId", request.getMediId(),
+//                    "message", "Login successful"
+//            ));
+//        }
+//
+//        Optional<Patient> patientList = patientService.getPatientByMediId(request.getMediId());
+//        if (!patientList.isEmpty()) {
+//            Patient patient = patientList.get();
+//            if (passwordEncoder.matches(request.getPassword(), patient.getPassword())) {
+//                return ResponseEntity.ok(patient);
+//            }
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+//    }
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        List<String> response = patientService.login(request.getMediId(), request.getPassword());
+        // First, check if the patient exists
+        Optional<Patient> optionalPatient = patientService.getPatientByMediId(request.getMediId());
 
-        if (!response.isEmpty()) {
-            return ResponseEntity.ok(Map.of(
-                    "token", response.get(0),
-                    "mediId", request.getMediId(),
-                    "message", "Login successful"
-            ));
-        }
+        if (optionalPatient.isPresent()) {
+            Patient patient = optionalPatient.get();
 
-        Optional<Patient> patientList = patientService.getPatientByMediId(request.getMediId());
-        if (!patientList.isEmpty()) {
-            Patient patient = patientList.get();
+            // Verify password
             if (passwordEncoder.matches(request.getPassword(), patient.getPassword())) {
-                return ResponseEntity.ok(patient);
+                // Generate token only if password matches
+                List<String> response = patientService.login(request.getMediId(), request.getPassword());
+
+                if (!response.isEmpty()) {
+                    return ResponseEntity.ok(Map.of(
+                            "token", response.get(0),
+                            "mediId", request.getMediId(),
+                            "message", "Login successful"
+                    ));
+                }
+
+                return ResponseEntity.ok(patient); // If no token, return patient details
             }
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+
     }
+
 }
 
 

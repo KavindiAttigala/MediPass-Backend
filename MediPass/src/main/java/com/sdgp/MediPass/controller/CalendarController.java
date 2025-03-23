@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/calendar-reminders")
+@RequestMapping("/medipass/calendar-reminders")
 @Api(value="Medical calendar", description = "Scheduling events on the medical calendar to get reminders")
 public class CalendarController {
 
@@ -22,8 +22,8 @@ public class CalendarController {
 
     @ApiOperation(value = "Add reminders to the calendar")
     @PostMapping("/add")
-    public ResponseEntity<CalendarReminder> addReminder(@RequestParam String description, @RequestParam String start, @RequestParam String end, @RequestParam String email, @RequestParam Long mediID){
-        CalendarReminder calendarReminder = calendarService.addReminder(description, start,end,email, mediID);
+    public ResponseEntity<CalendarReminder> addReminder(@RequestParam String description, @RequestParam LocalDateTime scheduledTime, @RequestParam Long mediID){
+        CalendarReminder calendarReminder = calendarService.addReminder(description, scheduledTime, mediID);
         return ResponseEntity.status(HttpStatus.CREATED).body(calendarReminder);
     }
 

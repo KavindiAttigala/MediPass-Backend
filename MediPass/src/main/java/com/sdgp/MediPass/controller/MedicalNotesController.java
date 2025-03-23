@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/medical-notes")
+@RequestMapping("/medipass/medical-notes")
 @Api(value = "Medical Notes", description = "Managing medical notes uploaded by the doctor")
 public class MedicalNotesController {
 

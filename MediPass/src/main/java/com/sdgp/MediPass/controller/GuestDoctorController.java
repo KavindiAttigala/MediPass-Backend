@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/guest-logging")
+@RequestMapping("/medipass/guest-logging")
 @Api(value="Guest Doctor Login", description = "Storing guest login information")
 public class GuestDoctorController {
     @Autowired

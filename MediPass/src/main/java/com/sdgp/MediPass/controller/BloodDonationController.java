@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/blood-donations")
+@RequestMapping("/medipass/blood-donations")
 @Api(value="Blood Donation Records", description="Storing blood donation records of the patient")
 public class BloodDonationController {
 
@@ -21,14 +21,14 @@ public class BloodDonationController {
     private BloodDonationService bloodDonationService;
 
     @ApiOperation(value = "Add a new blood donation record", notes = "Submit patient blood donation records to store in the database")
-    @PostMapping
+    @PostMapping("/add-B-records")
     public ResponseEntity<BloodDonationRecords> addBloodDonation(@RequestBody BloodDonationRecords bloodDonation){
         BloodDonationRecords savedDonation = bloodDonationService.saveBDRecords(bloodDonation);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedDonation);
     }
 
     @ApiOperation(value = "Get all blood donation records", notes = "Retrieve all stored blood donation records")
-    @GetMapping
+    @GetMapping("/get-B-records")
     public ResponseEntity<List<BloodDonationRecords>> getAllBloodDonations(){
         return ResponseEntity.ok(bloodDonationService.getAllDonations());
     }

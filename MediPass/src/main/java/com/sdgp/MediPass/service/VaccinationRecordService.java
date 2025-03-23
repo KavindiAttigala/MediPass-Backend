@@ -12,7 +12,7 @@ public class VaccinationRecordService {
     @Autowired
     private VaccinationRecordRepository vaccinationRecordRepository;
 
-    public VaccinationRecords addVaccinationRecords(VaccinationRecords vaccinationRecords){
+    public VaccinationRecords addVaccinationRecords(long mediId, VaccinationRecords vaccinationRecords){
         return vaccinationRecordRepository.save(vaccinationRecords);
     }
 
