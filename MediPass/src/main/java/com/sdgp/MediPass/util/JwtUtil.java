@@ -10,10 +10,10 @@ import javax.crypto.SecretKey;
 
 @Component
 public class JwtUtil {
-    private static final String SECRET = "YourSecretKeyReplaceThisWithAProperOne";
+    private static final String SECRET = "c7D9JvN3T5kM1qX8yL4zR2pW0aV6oBfH";
     private static final long EXPIRATION_TIME = 21600000; // 6 hours
 
-    // Extract username (mediId) from JWT token
+    // Extract mediId from JWT token
     public String extractMediId(String token) {
         return extractClaim(token, Claims::getSubject);
     }
