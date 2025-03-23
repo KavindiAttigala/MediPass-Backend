@@ -21,14 +21,14 @@ public class VaccinationRecordController {
 
     @ApiOperation(value = "Storing vaccination records")
     @PostMapping("/add-V-records/mediId/{mediId}")
-    public ResponseEntity<VaccinationRecords> addVaccinationRecords(@RequestParam long mediId, @RequestBody VaccinationRecords vaccinationRecords){
+    public ResponseEntity<VaccinationRecords> addVaccinationRecords(@PathVariable long mediId, @RequestBody VaccinationRecords vaccinationRecords){
         VaccinationRecords savedRecords= vaccinationRecordService.addVaccinationRecords(mediId,vaccinationRecords);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecords);
     }
 
     @ApiOperation(value = "Retrieving vaccination records")
     @GetMapping("/get-V-records/mediId/{mediId}")
-    public ResponseEntity<List<VaccinationRecords>> getAllVaccinationRecords(@RequestParam long mediId){
+    public ResponseEntity<List<VaccinationRecords>> getAllVaccinationRecords(@PathVariable long mediId){
         return ResponseEntity.ok(vaccinationRecordService.getAllVaccinationRecords(mediId));
     }
 
