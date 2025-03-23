@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/calendar-reminders")
+@RequestMapping("/medipass/calendar-reminders")
 @Api(value="Medical calendar", description = "Scheduling events on the medical calendar to get reminders")
 public class CalendarController {
 

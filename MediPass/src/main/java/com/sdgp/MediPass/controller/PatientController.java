@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/patient")
+@RequestMapping("/medipass/patient")
 @Api(value = "Patient Data", description = "Creating profiles for new patients and updating existing patient profiles")
 public class PatientController {
 
