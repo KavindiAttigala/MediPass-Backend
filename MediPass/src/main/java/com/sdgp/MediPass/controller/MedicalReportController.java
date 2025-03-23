@@ -4,6 +4,7 @@ import com.sdgp.MediPass.enums.ReportType;
 import com.sdgp.MediPass.model.MedicalReports;
 import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.service.MedicalReportService;
+import com.sdgp.MediPass.service.PatientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,20 @@ public class MedicalReportController {
     public List<MedicalReports> getReportsByPatientAndType(@PathVariable Long patientId, @PathVariable ReportType reportType) {
         return medicalReportService.getReportsByPatientAndType(patientId, reportType);
     }
+
+    @GetMapping("/patient/{patientId}")
+    public List<MedicalReports> getXRayReportsByPatientId(@PathVariable Long patientId) {
+        return medicalReportService.getReportsByPatientAndType(patientId, ReportType.valueOf("XRAY"));
+    }
+    @GetMapping("/patient/{patientId}")
+    public List<MedicalReports> getLabReportsByPatientId(@PathVariable Long patientId) {
+        return medicalReportService.getReportsByPatientAndType(patientId, ReportType.valueOf("LAB"));
+    }
+    @GetMapping("/patient/{patientId}")
+    public List<MedicalReports> getSurgeryReportsByPatientId(@PathVariable Long patientId) {
+        return medicalReportService.getReportsByPatientAndType(patientId, ReportType.valueOf("SURGERY"));
+    }
+    
 
 
 
