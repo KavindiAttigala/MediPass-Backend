@@ -108,7 +108,7 @@ public class VaccinationRecords {
         return patient;
     }
 
-    public void setPatient(Optional<Patient> patient) {
+    public void setPatient(Patient patient) {
         this.patient = patient;
     }
 
