@@ -28,7 +28,7 @@ public class GuestDoctorController {
     @ApiOperation(value = "Storing guest doctor login info in the DB")
     @PostMapping("/access")
     public ResponseEntity<String> doctorAccess(@RequestParam long mediId, @RequestParam String otp, @RequestBody GuestDoctor guestDoctor){
-        List<Patient> patientOptional =patientService.getPatientByMediId(mediId);
+        Optional<Patient> patientOptional =patientService.getPatientByMediId(mediId);
         if(patientOptional.isEmpty()){
             return ResponseEntity.badRequest().body("Invalid MediID");
         }

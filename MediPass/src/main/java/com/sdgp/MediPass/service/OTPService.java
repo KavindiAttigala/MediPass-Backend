@@ -41,11 +41,11 @@ public class OTPService {
 
     //Send OTP for doctor login access
     public String sendDoctorAccessOTP(Long mediId){
-        List<Patient> patientOptional = patientRepository.findByMediId(mediId);
+        Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
         if(patientOptional.isEmpty()){
             throw new RuntimeException("Invalid MediID");
         }
-        String email = patientOptional.get(0).getEmail();
+        String email = patientOptional.get().getEmail();
         String otp = generateOTP();
         otpStorage.put(mediId, otp);
 

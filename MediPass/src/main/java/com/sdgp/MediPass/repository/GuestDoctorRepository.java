@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface GuestDoctorRepository extends JpaRepository<GuestDoctor, Long> {
     // retrieve the last guest doctor entry
-    Optional<GuestDoctor> findTopByOrderByIdDesc();
+    Optional<GuestDoctor> findTopByOrderByDocIdDesc();
 }
