@@ -72,19 +72,19 @@ public class MedicalReportController {
         return medicalReportService.getReportsByPatientAndType(patientId, reportType);
     }
 
-    @GetMapping("/patient/{patientId}")
+    @GetMapping("/xRay/patient/{patientId}")
     public List<MedicalReports> getXRayReportsByPatientId(@PathVariable Long patientId) {
         return medicalReportService.getReportsByPatientAndType(patientId, ReportType.valueOf("XRAY"));
     }
-    @GetMapping("/patient/{patientId}")
+    @GetMapping("/labReport/patient/{patientId}")
     public List<MedicalReports> getLabReportsByPatientId(@PathVariable Long patientId) {
         return medicalReportService.getReportsByPatientAndType(patientId, ReportType.valueOf("LAB"));
     }
-    @GetMapping("/patient/{patientId}")
+    @GetMapping("/surgeryReport/patient/{patientId}")
     public List<MedicalReports> getSurgeryReportsByPatientId(@PathVariable Long patientId) {
         return medicalReportService.getReportsByPatientAndType(patientId, ReportType.valueOf("SURGERY"));
     }
-    
+
 
 
 
