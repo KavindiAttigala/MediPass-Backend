@@ -23,14 +23,39 @@ public class PatientController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    //validate the extracted token
+    private String validateToken(String token) throws Exception{
+        if (token == null || !token.startsWith("Bearer ")) {
+            throw new Exception("Invalid token");
+        }
+        String actualToken = token.substring(7);
+        String mediId = jwtUtil.extractMediId(actualToken);
+        if (mediId == null) {
+            throw new Exception("Invalid or expired token");
+        }
+        return mediId;  // Return extracted MediID if valid
+    }
+
+
     @ApiOperation(value = "Retrieve Patient Profile", notes = "Get patient details by MediID")
     @GetMapping("/{mediId}")
-    public ResponseEntity<Patient> getPatientById(@PathVariable long mediId) {
-        Optional<Patient> patients = patientService.getPatientByMediId(mediId);
-        if (!patients.isEmpty()) {
-            return ResponseEntity.ok(patients.get()); // Return the first patient
+    public ResponseEntity<Patient> getPatientById(@PathVariable long mediId, @RequestHeader("Authorization") String token) {
+        try {
+            // Validate the token and extract the mediId
+            String extractedMediId = validateToken(token);
+            if (!extractedMediId.equals(String.valueOf(mediId))) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            }
+
+
+            Optional<Patient> patients = patientService.getPatientByMediId(mediId);
+            if (!patients.isEmpty()) {
+                return ResponseEntity.ok(patients.get()); // Return the first patient
+            }
+            return ResponseEntity.notFound().build();
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/profile")
@@ -63,15 +88,33 @@ public class PatientController {
 
     @ApiOperation(value= "Update Patient Profile", notes= "Update patient details based on MediID")
     @PutMapping("/{id}")
-    public ResponseEntity<Patient> updatePatient(@PathVariable long id, @RequestBody Patient updatedPatient) {
-        Patient patient = patientService.updatePatient(id, updatedPatient);
-        return patient != null ? ResponseEntity.ok(patient) : ResponseEntity.notFound().build();
+    public ResponseEntity<Patient> updatePatient(@PathVariable long id, @RequestBody Patient updatedPatient, @RequestHeader("Authorization") String token) {
+        try{
+            // Validate and extract token
+            String extractedMediId = validateToken(token);
+            if (!extractedMediId.equals(String.valueOf(id))) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            }
+            Patient patient = patientService.updatePatient(id, updatedPatient);
+            return patient != null ? ResponseEntity.ok(patient) : ResponseEntity.notFound().build();
+
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePatient(@PathVariable long id) {
-        patientService.deletePatient(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deletePatient(@PathVariable long id, @RequestHeader("Authorization") String token) {
+        try{
+            String extractedMediId = validateToken(token);
+            if (!extractedMediId.equals(String.valueOf(id))) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            }
+            patientService.deletePatient(id);
+            return ResponseEntity.noContent().build();
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @ApiOperation(value = "Change password by verifying existing password")
