@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reports")
+@RequestMapping("/medipass/api/reports")
 @Api(value = "Medical Reports", description = "Managing medical reports of the patient")
 public class MedicalReportController {
 

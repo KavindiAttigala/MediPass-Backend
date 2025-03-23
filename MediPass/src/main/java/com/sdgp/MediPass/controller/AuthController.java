@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/medipass/auth")
 @Api(value="Authentication", description="Authenticating the login")
 public class AuthController {
 

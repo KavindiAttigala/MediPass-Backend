@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/vaccinations")
+@RequestMapping("/medipass/vaccinations")
 @Api(value = "Vaccination Records", description = "Managing vaccination records of the patient")
 public class VaccinationRecordController {
     @Autowired
