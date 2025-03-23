@@ -20,6 +20,9 @@ public class PatientService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailService emailService;
+
     public Patient registerPatientAdult(Patient patient) {
         // Assuming NIC is the unique identifier. Adjust if needed.
         List<Patient> existingPatients = patientRepository.findByNic(patient.getNic());
@@ -27,7 +30,11 @@ public class PatientService {
             throw new RuntimeException("Account already exists for this NIC");
         }
         patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
-        return patientRepository.save(patient);
+
+        Patient savedPatient= patientRepository.save(patient);
+        // Send email with the generated MediId to login
+        emailService.sendMediIdEmail(savedPatient.getEmail(), savedPatient.getMediId(), savedPatient.getFirstName());
+        return savedPatient;
     }
 
     public Patient registerPatientChild(Patient patient) {
@@ -37,7 +44,10 @@ public class PatientService {
             throw new RuntimeException("No account found for this NIC");
         }
         patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
-        return patientRepository.save(patient);
+        Patient savedPatient= patientRepository.save(patient);
+
+        emailService.sendMediIdEmail(savedPatient.getEmail(), savedPatient.getMediId(), savedPatient.getFirstName());
+        return savedPatient;
     }
 
     public List<String> login(long mediId, String password) {
