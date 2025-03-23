@@ -3,6 +3,7 @@ package com.sdgp.MediPass.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Entity
 public class VaccinationRecords {
@@ -107,7 +108,7 @@ public class VaccinationRecords {
         return patient;
     }
 
-    public void setPatient(Patient patient) {
+    public void setPatient(Optional<Patient> patient) {
         this.patient = patient;
     }
 
