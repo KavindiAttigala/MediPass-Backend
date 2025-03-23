@@ -20,7 +20,7 @@ public class VaccinationRecordService {
     public VaccinationRecords addVaccinationRecords(long mediId, VaccinationRecords vaccinationRecords){
         Optional<Patient> patient = patientRepository.findByMediId(mediId);
         vaccinationRecords.setMediId(mediId);
-        vaccinationRecords.setPatient(patient);
+        vaccinationRecords.setPatient(patient.get());
         return vaccinationRecordRepository.save(vaccinationRecords);
 
     }
