@@ -21,8 +21,8 @@ public class VaccinationRecordController {
 
     @ApiOperation(value = "Storing vaccination records")
     @PostMapping("/add-V-records")
-    public ResponseEntity<VaccinationRecords> addVaccinationRecords(@RequestBody VaccinationRecords bloodDonation){
-        VaccinationRecords savedRecords= vaccinationRecordService.addVaccinationRecords(bloodDonation);
+    public ResponseEntity<VaccinationRecords> addVaccinationRecords(@RequestBody VaccinationRecords vaccinationRecords){
+        VaccinationRecords savedRecords= vaccinationRecordService.addVaccinationRecords(vaccinationRecords);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecords);
     }
 
