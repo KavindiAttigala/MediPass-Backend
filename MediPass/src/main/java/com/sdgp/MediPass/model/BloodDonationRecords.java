@@ -2,6 +2,7 @@ package com.sdgp.MediPass.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Entity
 @Table(name="BloodDonationRecords")
@@ -13,11 +14,33 @@ public class BloodDonationRecords {
     private String donationNumber;
     private LocalDate date;
     private String place;
+    private long mediId;
 
     @ManyToOne      //since many blood donation records can be associated with one patient
 //    @JoinColumn(name = "mediIdBD", nullable = false)     //FK referring to the MediId(PK) in Patient table
     @JoinColumn(name = "mediId", referencedColumnName = "mediId", nullable = false)
     private Patient patient;
+
+    public BloodDonationRecords(Long donationId, String donationNumber, LocalDate date, String place, long mediId, Patient patient) {
+        this.donationId = donationId;
+        this.donationNumber = donationNumber;
+        this.date = date;
+        this.place = place;
+        this.mediId = mediId;
+        this.patient = patient;
+    }
+
+    public BloodDonationRecords() {
+
+    }
+
+    public BloodDonationRecords(Long donationId, String donationNumber, LocalDate date, String place, Patient patient) {
+        this.donationId = donationId;
+        this.donationNumber = donationNumber;
+        this.date = date;
+        this.place = place;
+        this.patient=patient;
+    }
 
     public Long getDonationId() {
         return donationId;
@@ -55,7 +78,15 @@ public class BloodDonationRecords {
         return patient;
     }
 
-    public void setPatient(Patient patient) {
+    public void setPatient(Optional<Patient> patient) {
         this.patient = patient;
+    }
+
+    public long getMediId() {
+        return mediId;
+    }
+
+    public void setMediId(long mediId) {
+        this.mediId = mediId;
     }
 }

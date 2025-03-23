@@ -3,6 +3,7 @@ package com.sdgp.MediPass.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Entity
 public class VaccinationRecords {
@@ -15,6 +16,7 @@ public class VaccinationRecords {
     private String batchNo;
     private String description;
     private String specialNotes;
+    private long mediId;
 
     @ManyToOne
     @JoinColumn(name = "mediIdVaccination" , nullable = false)
@@ -27,6 +29,18 @@ public class VaccinationRecords {
         this.batchNo = batchNo;
         this.description = description;
         this.specialNotes = specialNotes;
+        this.patient = patient;
+    }
+
+    public VaccinationRecords(long vaccinationId, String vaccinationType, LocalDate date, String age, String batchNo, String description, String specialNotes, long mediId, Patient patient) {
+        this.vaccinationId = vaccinationId;
+        this.vaccinationType = vaccinationType;
+        this.date = date;
+        this.age = age;
+        this.batchNo = batchNo;
+        this.description = description;
+        this.specialNotes = specialNotes;
+        this.mediId = mediId;
         this.patient = patient;
     }
 
@@ -94,7 +108,15 @@ public class VaccinationRecords {
         return patient;
     }
 
-    public void setPatient(Patient patient) {
+    public void setPatient(Optional<Patient> patient) {
         this.patient = patient;
+    }
+
+    public long getMediId() {
+        return mediId;
+    }
+
+    public void setMediId(long mediId) {
+        this.mediId = mediId;
     }
 }
