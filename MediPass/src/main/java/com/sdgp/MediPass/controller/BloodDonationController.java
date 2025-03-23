@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/blood-donations")
+@RequestMapping("/medipass/blood-donations")
 @Api(value="Blood Donation Records", description="Storing blood donation records of the patient")
 public class BloodDonationController {
 

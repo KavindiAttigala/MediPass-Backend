@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/chronic-disease")
+@RequestMapping("/medipass/chronic-disease")
 @Api(value = "Chronic Disease Records", description = "Managing a record of chronic diseases and medication of the user")
 public class ChronicDiseaseController {
     @Autowired
