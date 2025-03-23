@@ -78,7 +78,7 @@ public class BloodDonationRecords {
         return patient;
     }
 
-    public void setPatient(Optional<Patient> patient) {
+    public void setPatient(Patient patient) {
         this.patient = patient;
     }
 
@@ -88,5 +88,8 @@ public class BloodDonationRecords {
 
     public void setMediId(long mediId) {
         this.mediId = mediId;
+    }
+
+    public void setPatient(Optional<Patient> patient) {
     }
 }
