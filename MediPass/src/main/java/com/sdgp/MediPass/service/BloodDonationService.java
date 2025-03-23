@@ -13,12 +13,13 @@ public class BloodDonationService {
     @Autowired
     private BloodDonationRepository bloodDonationRepository;
 
-    public BloodDonationRecords saveBDRecords(BloodDonationRecords bloodDonationRec){
+    public BloodDonationRecords saveBDRecords(long mediId,BloodDonationRecords bloodDonationRec){
+        bloodDonationRec.setMediId(mediId);
         return bloodDonationRepository.save(bloodDonationRec);
     }
 
-    public List<BloodDonationRecords> getAllDonations(){
-        return bloodDonationRepository.findAll();
+    public List<BloodDonationRecords> getAllDonations(long mediId){
+        return bloodDonationRepository.findAllByMediId(mediId);
     }
 
 }

@@ -13,11 +13,13 @@ public class VaccinationRecordService {
     private VaccinationRecordRepository vaccinationRecordRepository;
 
     public VaccinationRecords addVaccinationRecords(long mediId, VaccinationRecords vaccinationRecords){
+        vaccinationRecords.setMediId(mediId);
         return vaccinationRecordRepository.save(vaccinationRecords);
+
     }
 
-    public List<VaccinationRecords> getAllVaccinationRecords(){
-        return vaccinationRecordRepository.findAll();
+    public List<VaccinationRecords> getAllVaccinationRecords(long mediId){
+        return vaccinationRecordRepository.findByMediId(mediId);
     }
 
 }

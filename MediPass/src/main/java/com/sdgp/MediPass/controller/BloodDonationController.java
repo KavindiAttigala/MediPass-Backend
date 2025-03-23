@@ -21,15 +21,15 @@ public class BloodDonationController {
     private BloodDonationService bloodDonationService;
 
     @ApiOperation(value = "Add a new blood donation record", notes = "Submit patient blood donation records to store in the database")
-    @PostMapping("/add-B-records")
-    public ResponseEntity<BloodDonationRecords> addBloodDonation(@RequestBody BloodDonationRecords bloodDonation){
-        BloodDonationRecords savedDonation = bloodDonationService.saveBDRecords(bloodDonation);
+    @PostMapping("/add-B-records/mediId/{mediId}")
+    public ResponseEntity<BloodDonationRecords> addBloodDonation(@RequestParam long mediId, @RequestBody BloodDonationRecords bloodDonation){
+        BloodDonationRecords savedDonation = bloodDonationService.saveBDRecords(mediId,bloodDonation);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedDonation);
     }
 
     @ApiOperation(value = "Get all blood donation records", notes = "Retrieve all stored blood donation records")
-    @GetMapping("/get-B-records")
-    public ResponseEntity<List<BloodDonationRecords>> getAllBloodDonations(){
-        return ResponseEntity.ok(bloodDonationService.getAllDonations());
+    @GetMapping("/get-B-records/mediId/{mediId}")
+    public ResponseEntity<List<BloodDonationRecords>> getAllBloodDonations(@RequestParam long mediId){
+        return ResponseEntity.ok(bloodDonationService.getAllDonations(mediId));
     }
 }
