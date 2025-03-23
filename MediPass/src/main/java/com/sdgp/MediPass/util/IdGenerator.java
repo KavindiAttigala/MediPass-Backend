@@ -11,7 +11,7 @@ public class IdGenerator implements IdentifierGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object){
         Random random = new Random();
-        int uniqueId;
+        long uniqueId;
         do {
             uniqueId =100000+ random.nextInt(900000);
 
@@ -20,7 +20,7 @@ public class IdGenerator implements IdentifierGenerator {
         return uniqueId;
     }
 
-    private boolean isUnique(SharedSessionContractImplementor session, int id){
+    private boolean isUnique(SharedSessionContractImplementor session, long id){
         Long count = (Long) session.createQuery(
                 "SELECT COUNT(e) FROM Patient e WHERE e.mediId = :id")
                 .setParameter("id",id)
