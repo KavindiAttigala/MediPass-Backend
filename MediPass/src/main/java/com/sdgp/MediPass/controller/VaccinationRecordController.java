@@ -20,16 +20,16 @@ public class VaccinationRecordController {
     private VaccinationRecordService vaccinationRecordService;
 
     @ApiOperation(value = "Storing vaccination records")
-    @PostMapping("/add-V-records")
-    public ResponseEntity<VaccinationRecords> addVaccinationRecords(@RequestBody VaccinationRecords vaccinationRecords){
-        VaccinationRecords savedRecords= vaccinationRecordService.addVaccinationRecords(vaccinationRecords);
+    @PostMapping("/add-V-records/mediId/{mediId}")
+    public ResponseEntity<VaccinationRecords> addVaccinationRecords(@PathVariable long mediId, @RequestBody VaccinationRecords vaccinationRecords){
+        VaccinationRecords savedRecords= vaccinationRecordService.addVaccinationRecords(mediId,vaccinationRecords);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRecords);
     }
 
     @ApiOperation(value = "Retrieving vaccination records")
-    @GetMapping("/get-V-records")
-    public ResponseEntity<List<VaccinationRecords>> getAllVaccinationRecords(){
-        return ResponseEntity.ok(vaccinationRecordService.getAllVaccinationRecords());
+    @GetMapping("/get-V-records/mediId/{mediId}")
+    public ResponseEntity<List<VaccinationRecords>> getAllVaccinationRecords(@PathVariable long mediId){
+        return ResponseEntity.ok(vaccinationRecordService.getAllVaccinationRecords(mediId));
     }
 
 }

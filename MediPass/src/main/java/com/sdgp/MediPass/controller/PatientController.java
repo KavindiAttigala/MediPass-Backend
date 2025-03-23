@@ -76,12 +76,22 @@ public class PatientController {
 
     @ApiOperation(value = "Change password by verifying existing password")
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestParam long mediId, @RequestParam String oldPassword, @RequestParam String newPassword) {
-        boolean change = patientService.changePassword(mediId, oldPassword, newPassword);
-        if (change) {
-            return ResponseEntity.ok("Password changed");
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<String> changePassword( @RequestHeader("Authorization") String token, @RequestParam String oldPassword, @RequestParam String newPassword) {
+        try {
+            // Extract the actual token from "Bearer <token>"
+            String actualToken = token.substring(7);
+
+            // Validate token and extract mediId
+            String mediIdStr = jwtUtil.extractMediId(actualToken);
+            long mediId = Long.parseLong(mediIdStr);
+            boolean change = patientService.changePassword(mediId, oldPassword, newPassword);
+            if (change) {
+                return ResponseEntity.ok("Password changed");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
         }
     }
 }
