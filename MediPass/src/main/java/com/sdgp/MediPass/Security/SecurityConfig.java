@@ -27,6 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/medipass/otp/sendOTP").permitAll()
                         .requestMatchers("/medipass/**").permitAll()  // Allow authentication endpoints
                         .anyRequest().authenticated()            // Secure other endpoints
                 )
