@@ -27,9 +27,9 @@ public class VaccinationRecordController {
     }
 
     @ApiOperation(value = "Retrieving vaccination records")
-    @GetMapping("/get-V-records")
-    public ResponseEntity<List<VaccinationRecords>> getAllVaccinationRecords(){
-        return ResponseEntity.ok(vaccinationRecordService.getAllVaccinationRecords());
+    @GetMapping("/get-V-records/mediId/{mediId}")
+    public ResponseEntity<List<VaccinationRecords>> getAllVaccinationRecords(@RequestParam long mediId){
+        return ResponseEntity.ok(vaccinationRecordService.getAllVaccinationRecords(mediId));
     }
 
 }
