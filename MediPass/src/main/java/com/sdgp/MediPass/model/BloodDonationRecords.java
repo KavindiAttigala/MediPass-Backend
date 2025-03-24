@@ -18,7 +18,7 @@ public class BloodDonationRecords {
 
     @ManyToOne      //since many blood donation records can be associated with one patient
 //    @JoinColumn(name = "mediIdBD", nullable = false)     //FK referring to the MediId(PK) in Patient table
-    @JoinColumn(name = "mediId", referencedColumnName = "mediId", nullable = false)
+    @JoinColumn(name = "mediIdBD", referencedColumnName = "mediId", nullable = false)
     private Patient patient;
 
     public BloodDonationRecords(Long donationId, String donationNumber, LocalDate date, String place, long mediId, Patient patient) {
@@ -78,7 +78,7 @@ public class BloodDonationRecords {
         return patient;
     }
 
-    public void setPatient(Optional<Patient> patient) {
+    public void setPatient(Patient patient) {
         this.patient = patient;
     }
 
@@ -88,5 +88,8 @@ public class BloodDonationRecords {
 
     public void setMediId(long mediId) {
         this.mediId = mediId;
+    }
+
+    public void setPatient(Optional<Patient> patient) {
     }
 }
