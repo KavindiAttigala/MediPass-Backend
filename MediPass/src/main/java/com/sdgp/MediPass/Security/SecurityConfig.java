@@ -28,7 +28,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/medipass/otp/sendOTP").permitAll()
-                        .requestMatchers("/medipass/**").permitAll()  // Allow authentication endpoints
+                        .requestMatchers("/medipass/auth/**").permitAll()  // Allow authentication endpoints
                         .anyRequest().authenticated()            // Secure other endpoints
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
