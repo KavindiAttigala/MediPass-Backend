@@ -18,7 +18,7 @@ public class BloodDonationRecords {
 
     @ManyToOne      //since many blood donation records can be associated with one patient
 //    @JoinColumn(name = "mediIdBD", nullable = false)     //FK referring to the MediId(PK) in Patient table
-    @JoinColumn(name = "mediId", referencedColumnName = "mediId", nullable = false)
+    @JoinColumn(name = "mediIdBD", referencedColumnName = "mediId", nullable = false)
     private Patient patient;
 
     public BloodDonationRecords(Long donationId, String donationNumber, LocalDate date, String place, long mediId, Patient patient) {
