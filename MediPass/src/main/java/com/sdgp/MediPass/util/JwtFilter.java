@@ -17,14 +17,11 @@ public class JwtFilter extends OncePerRequestFilter {
         String requestURI = request.getServletPath();
 
         // Skip JWT validation for these endpoints as they do not require authentication
-        if (requestURI.equals("/medipass/auth/register/adult") || requestURI.equals("/medipass/auth/register/child")) {
+        if (requestURI.equals("/medipass/auth/register/adult") || requestURI.equals("/medipass/auth/register/child") ||
+        requestURI.equals("/medipass/otp/sendOTP") || requestURI.equals("/medipass/otp/verifyOTP") || requestURI.equals("/medipass/otp/reset-password")) {
             filterChain.doFilter(request, response);
             return;
         }
-//        if (requestURI.startsWith("/medipass/")) {
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
 
 
         // Retrieve the Authorization header
