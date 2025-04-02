@@ -31,18 +31,16 @@ public class GuestDoctorController {
 
     @ApiOperation(value = "Storing guest doctor login info in the DB")
     @PostMapping("/access")
-    public ResponseEntity<String> doctorAccess(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam long mediId, @RequestParam String otp, @RequestBody GuestDoctor guestDoctor){
+    public ResponseEntity<String> doctorAccess(@RequestHeader(value = "Authorization", required = false) String token,
+                                               @RequestParam long mediId, @RequestParam String otp, @RequestBody GuestDoctor guestDoctor){
         //validate the format of the token
         if (token == null || !token.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid token");
         }
-
         // Extract the token part
         String jwtToken = token.substring(7);
-
         // Validate the token and extract mediId from it
         String extractedMediId = jwtUtil.extractMediId(jwtToken);
-
         //validate and extract mediId from the token
         if (extractedMediId == null || !extractedMediId.equals(String.valueOf(mediId))) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");

@@ -74,7 +74,8 @@ public class OTPController {
     @ApiOperation(value = "Send OTP for doctor access request")
     @PostMapping("/sendDoctorAccessOTP")
     //send the doctor login otp
-    public ResponseEntity<String> sendDoctorAccessOTP( @RequestHeader(value = "Authorization", required = false) String token, @RequestParam long mediId){
+    public ResponseEntity<String> sendDoctorAccessOTP( @RequestHeader(value = "Authorization", required = false) String token,
+                                                       @RequestParam long mediId){
         ResponseEntity<String> validateToken = validateToken(token);
         if(!validateToken.getStatusCode().is2xxSuccessful()){
             return validateToken;

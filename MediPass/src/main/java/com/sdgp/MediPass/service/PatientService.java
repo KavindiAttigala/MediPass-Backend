@@ -4,6 +4,8 @@ import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.repository.PatientRepository;
 import com.sdgp.MediPass.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ public class PatientService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private EmailService emailService;
+    private JavaMailSender mailSender;
 
     public Patient registerPatientAdult(Patient patient) {
         // Assuming NIC is the unique identifier. Adjust if needed.
@@ -32,8 +34,9 @@ public class PatientService {
         patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
 
         Patient savedPatient= patientRepository.save(patient);
+
         // Send email with the generated MediId to login
-        emailService.sendMediIdEmail(savedPatient.getEmail(), savedPatient.getMediId(), savedPatient.getFirstName());
+        sendEmail(savedPatient.getEmail(), savedPatient.getMediId(), savedPatient.getFirstName(), savedPatient.getLastName());
         return savedPatient;
     }
 
@@ -46,7 +49,8 @@ public class PatientService {
         patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
         Patient savedPatient= patientRepository.save(patient);
 
-        emailService.sendMediIdEmail(savedPatient.getEmail(), savedPatient.getMediId(), savedPatient.getFirstName());
+        // Send email with the generated MediId to login
+        sendEmail(savedPatient.getEmail(), savedPatient.getMediId(), savedPatient.getFirstName(), savedPatient.getLastName());
         return savedPatient;
     }
 
@@ -141,6 +145,17 @@ public class PatientService {
         patient.setPassword(passwordEncoder.encode(newPassword));
         patientRepository.save(patient);
         return true;
+    }
+
+    private void sendEmail(String email, long mediId, String firstName, String lastName) {
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(email);
+        msg.setSubject("Registration to MediPass is successful");
+        msg.setText(" Welcome "+ firstName + " " + lastName
+                + " You have successfully completed the sign up process. To complete setting up your MediPass account use the following MediID. "
+                + "We advice you to not share your MediID with anyone. \n\n"
+                + "Your MediID is: "+mediId);
+        mailSender.send(msg);
     }
 
     public Optional<Patient> getUserByMediId(long mediId) {

@@ -4,9 +4,12 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -40,6 +43,11 @@ public class JwtFilter extends OncePerRequestFilter {
                     response.sendError(javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
                     return;
                 }
+
+                // Create an authentication object and set it in the Security Context
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(mediId, null, Collections.emptyList());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 // If the token is valid, set the username as a request attribute
                 request.setAttribute("user", mediId);
