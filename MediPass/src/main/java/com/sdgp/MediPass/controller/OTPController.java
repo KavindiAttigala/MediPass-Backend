@@ -29,6 +29,10 @@ public class OTPController {
 
     //validate the extracted token
     private ResponseEntity<String> validateToken(String token) {
+        return extractMediId(token, jwtUtil);
+    }
+
+    static ResponseEntity<String> extractMediId(String token, JwtUtil jwtUtil) {
         if (token == null || !token.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid token");
         }
@@ -88,24 +92,24 @@ public class OTPController {
         }
     }
 
-    @ApiOperation(value = "Verify the OTP for the doctor login")
-    @PostMapping("/doctor-access")
-    //verify the doctor login OTP
-    public ResponseEntity<String> verifyDoctorAccessOTP( @RequestHeader(value = "Authorization", required = false) String token, @RequestParam long mediId, @RequestParam String otp){
-        ResponseEntity<String> validateToken = validateToken(token);
-        if(!validateToken.getStatusCode().is2xxSuccessful()){
-            return validateToken;
-        }
-
-        Optional<Patient> patient = patientService.getUserByMediId(mediId);
-        if(patient.isEmpty()){
-            return ResponseEntity.badRequest().body("Invalid mediId or OTP");
-        }
-
-        return otpService.verifyOTP(mediId,otp)
-                ? ResponseEntity.ok("OTP Verified")         //If verifyOTP() returns true
-                : ResponseEntity.badRequest().body("Invalid OTP");
-
-    }
+//    @ApiOperation(value = "Verify the OTP for the doctor login")
+//    @PostMapping("/verifyDoctorAccessOTP")
+//    //verify the doctor login OTP
+//    public ResponseEntity<String> verifyDoctorAccessOTP( @RequestHeader(value = "Authorization", required = false) String token, @RequestParam long mediId, @RequestParam String otp){
+//        ResponseEntity<String> validateToken = validateToken(token);
+//        if(!validateToken.getStatusCode().is2xxSuccessful()){
+//            return validateToken;
+//        }
+//
+//        Optional<Patient> patient = patientService.getUserByMediId(mediId);
+//        if(patient.isEmpty()){
+//            return ResponseEntity.badRequest().body("Invalid mediId or OTP");
+//        }
+//
+//        return otpService.verifyOTP(mediId,otp)
+//                ? ResponseEntity.ok("OTP Verified")         //If verifyOTP() returns true
+//                : ResponseEntity.badRequest().body("Invalid OTP");
+//
+//    }
     
 }

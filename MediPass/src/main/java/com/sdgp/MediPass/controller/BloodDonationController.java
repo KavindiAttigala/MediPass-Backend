@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.sdgp.MediPass.controller.OTPController.extractMediId;
+
 @RestController
 @RequestMapping("/medipass/blood-donations")
 @Api(value="Blood Donation Records", description="Storing blood donation records of the patient")
@@ -27,15 +29,7 @@ public class BloodDonationController {
 
     //validate the extracted token
     private ResponseEntity<String> validateToken(String token) {
-        if (token == null || !token.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid token");
-        }
-        String actualToken = token.substring(7);
-        String mediId = jwtUtil.extractMediId(actualToken);
-        if (mediId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
-        }
-        return ResponseEntity.ok(mediId);  // Return extracted MediID if valid
+        return extractMediId(token, jwtUtil);
     }
 
     @ApiOperation(value = "Add a new blood donation record", notes = "Submit patient blood donation records to store in the database")

@@ -63,8 +63,13 @@ public class OTPService {
 
     //verify the otp
     public boolean verifyOTP(long mediId, String otp){
-        //checks whether map contains an OTP for the given email AND whether the given OTP matches with the one stored in the map
         return otpStorage.containsKey(mediId) && otpStorage.get(mediId).equals(otp);
+        //checks whether map contains an OTP for the given email AND whether the given OTP matches with the one stored in the map
+//        boolean isValid = otpStorage.containsKey(mediId) && otpStorage.get(mediId).equals(otp);
+//        if(isValid){
+//            otpStorage.remove(mediId);  // Remove OTP after verification to avoid reuse
+//        }
+//        return isValid;
     }
 
     //send the email the to the relevant patient

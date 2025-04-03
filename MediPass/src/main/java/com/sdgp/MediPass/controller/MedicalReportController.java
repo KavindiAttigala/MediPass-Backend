@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+import static com.sdgp.MediPass.controller.OTPController.extractMediId;
+
 @RestController
 @RequestMapping("/medipass/api/reports")
 @Api(value = "Medical Reports", description = "Managing medical reports of the patient")
@@ -31,15 +33,7 @@ public class MedicalReportController {
 
     //validate the extracted token
     private ResponseEntity<String> validateToken(String token) {
-        if (token == null || !token.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid token");
-        }
-        String actualToken = token.substring(7);
-        String mediId = jwtUtil.extractMediId(actualToken);
-        if (mediId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
-        }
-        return ResponseEntity.ok(mediId);  // Return extracted MediID if valid
+        return extractMediId(token, jwtUtil);
     }
 
 
