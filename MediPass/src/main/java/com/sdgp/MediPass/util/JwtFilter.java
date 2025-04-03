@@ -4,48 +4,51 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import java.io.IOException;
+import java.util.ArrayList;
 
+@Component
 public class JwtFilter extends OncePerRequestFilter {
-
+    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
         String requestURI = request.getServletPath();
+        logger.info("JwtFilter processing request: {}", requestURI);
 
-        // Skip JWT validation for these endpoints as they do not require authentication
-        if (requestURI.equals("/medipass/auth/register/adult") || requestURI.equals("/medipass/auth/register/child") ||
-        requestURI.equals("/medipass/otp/sendOTP") || requestURI.equals("/medipass/otp/verifyOTP") || requestURI.equals("/medipass/otp/reset-password")) {
+        // Skip token validation for public endpoints
+        if (requestURI.startsWith("/medipass/auth/") || requestURI.startsWith("/medipass/otp/")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-
-        // Retrieve the Authorization header
-            String token = request.getHeader("Authorization");
-
-            // Check if the Authorization header contains the token and starts with "Bearer "
-            if (token != null && token.startsWith("Bearer ")) {
-                // Extract the token by removing "Bearer " prefix
-                String jwtToken = token.substring(7);
-
-                // Call the JwtUtil to validate the token and retrieve the user information (e.g., mediId)
-                String mediId = JwtUtil.validateToken(jwtToken);
-
-                // If token is invalid, send unauthorized response
-                if (mediId == null) {
-                    response.sendError(javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
-                    return;
-                }
-
-                // If the token is valid, set the username as a request attribute
-                request.setAttribute("user", mediId);
+        String token = request.getHeader("Authorization");
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwtToken = token.substring(7);
+            String mediId = JwtUtil.validateToken(jwtToken); // returns null if invalid
+            if (mediId == null) {
+                logger.warn("Invalid or expired token");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
+                return;
             }
+            logger.info("Token valid for mediId: {}", mediId);
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(mediId, null, new ArrayList<>());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } else {
+            logger.warn("No valid Authorization header found");
+        }
 
-            // Continue with the next filter in the chain
-            filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 }

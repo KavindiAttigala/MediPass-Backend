@@ -23,29 +23,29 @@ public class PatientService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     public Patient registerPatientAdult(Patient patient) {
-        // Assuming NIC is the unique identifier. Adjust if needed.
+        // Assuming NIC is the unique identifier.
         List<Patient> existingPatients = patientRepository.findByNic(patient.getNic());
         if (existingPatients != null && !existingPatients.isEmpty()) {
             throw new RuntimeException("Account already exists for this NIC");
         }
         patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
-
-        Patient savedPatient= patientRepository.save(patient);
-        // Send email with the generated MediId to login
+        Patient savedPatient = patientRepository.save(patient);
         emailService.sendMediIdEmail(savedPatient.getEmail(), savedPatient.getMediId(), savedPatient.getFirstName());
         return savedPatient;
     }
 
     public Patient registerPatientChild(Patient patient) {
-        // Using the repository method findByRoleAndNic to verify that an "Adult" account exists.
+        // Using repository method to verify an "Adult" account exists.
         List<Patient> existingPatients = patientRepository.findByRoleAndNic("Adult", patient.getNic());
         if (existingPatients == null || existingPatients.isEmpty()) {
             throw new RuntimeException("No account found for this NIC");
         }
         patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
-        Patient savedPatient= patientRepository.save(patient);
-
+        Patient savedPatient = patientRepository.save(patient);
         emailService.sendMediIdEmail(savedPatient.getEmail(), savedPatient.getMediId(), savedPatient.getFirstName());
         return savedPatient;
     }
@@ -55,7 +55,7 @@ public class PatientService {
         if (patientOpt.isPresent()) {
             Patient patient = patientOpt.get();
             if (passwordEncoder.matches(password, patient.getPassword())) {
-                String token = JwtUtil.generateToken(String.valueOf(mediId));
+                String token = jwtUtil.generateToken(String.valueOf(mediId));
                 return List.of(token);
             }
         }
@@ -70,23 +70,41 @@ public class PatientService {
         return patientRepository.save(patient);
     }
 
+    // Updated update method: only update non-null fields
     public Patient updatePatient(long id, Patient updatedPatient) {
         return patientRepository.findById(id).map(patient -> {
-            patient.setFirstName(updatedPatient.getFirstName());
-            patient.setLastName(updatedPatient.getLastName());
-            patient.setEmail(updatedPatient.getEmail());
-            patient.setNic(updatedPatient.getNic());
-            patient.setContactNumber(updatedPatient.getContactNumber());
-            patient.setPassword(updatedPatient.getPassword());
-            patient.setRole(updatedPatient.getRole());
-            patient.setBirthday(updatedPatient.getBirthday());
-            patient.setAddress(updatedPatient.getAddress());
-            patient.setBloodGroup(updatedPatient.getBloodGroup());
-            patient.setGender(updatedPatient.getGender());
+            if (updatedPatient.getFirstName() != null)
+                patient.setFirstName(updatedPatient.getFirstName());
+            if (updatedPatient.getLastName() != null)
+                patient.setLastName(updatedPatient.getLastName());
+            if (updatedPatient.getEmail() != null)
+                patient.setEmail(updatedPatient.getEmail());
+            if (updatedPatient.getNic() != null)
+                patient.setNic(updatedPatient.getNic());
+            if (updatedPatient.getContactNumber() != null)
+                patient.setContactNumber(updatedPatient.getContactNumber());
+            if (updatedPatient.getPassword() != null)
+                patient.setPassword(updatedPatient.getPassword());
+            if (updatedPatient.getRole() != null)
+                patient.setRole(updatedPatient.getRole());
+            if (updatedPatient.getBirthday() != null)
+                patient.setBirthday(updatedPatient.getBirthday());
+            if (updatedPatient.getAddress() != null)
+                patient.setAddress(updatedPatient.getAddress());
+            if (updatedPatient.getBloodGroup() != null)
+                patient.setBloodGroup(updatedPatient.getBloodGroup());
+            if (updatedPatient.getGender() != null)
+                patient.setGender(updatedPatient.getGender());
+
+            // For numeric fields, consider whether 0.0 is a valid update or use wrapper types (Double) to check null.
             patient.setHeight(updatedPatient.getHeight());
             patient.setWeight(updatedPatient.getWeight());
-            patient.setAllergy(updatedPatient.getAllergy());
-            patient.setProfilePicture(updatedPatient.getProfilePicture());
+
+            if (updatedPatient.getAllergy() != null)
+                patient.setAllergy(updatedPatient.getAllergy());
+            if (updatedPatient.getProfilePicture() != null)
+                patient.setProfilePicture(updatedPatient.getProfilePicture());
+
             return patientRepository.save(patient);
         }).orElse(null);
     }
@@ -96,20 +114,16 @@ public class PatientService {
     }
 
     public String verifyUserAndGetEmail(String nic, long mediId) {
-        // Fetch the patient by NIC and MediID
         Optional<Patient> patientOpt = patientRepository.findByNicAndMediId(nic, mediId);
-        if (patientOpt.isPresent()) {
-            return patientOpt.get().getEmail();
-        }
-        return "User email not found";
+        return patientOpt.map(Patient::getEmail).orElse("User email not found");
     }
 
-    // Update password method with encryption for the new password.
+    // Update password method with encryption
     public boolean updatePassword(Long mediId, String newPassword) {
         Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
         if (patientOptional.isPresent()) {
             Patient patient = patientOptional.get();
-            patient.setPassword(passwordEncoder.encode(newPassword)); // Encrypt new password
+            patient.setPassword(passwordEncoder.encode(newPassword));
             patientRepository.save(patient);
             return true;
         }
@@ -119,7 +133,7 @@ public class PatientService {
     public boolean verifyOldPassword(Long mediId, String oldPassword) {
         Optional<Patient> patientOptional = patientRepository.findByMediId(mediId);
         if (patientOptional.isEmpty()) {
-            return false;   // Invalid MediID
+            return false;
         }
         Patient patient = patientOptional.get();
         return passwordEncoder.matches(oldPassword, patient.getPassword());
@@ -131,13 +145,9 @@ public class PatientService {
             return false;
         }
         Patient patient = patientOptional.get();
-
-        // Verify the existing password before updating
         if (!verifyOldPassword(mediId, oldPassword)) {
             return false;
         }
-
-        // Encrypt the new password and update
         patient.setPassword(passwordEncoder.encode(newPassword));
         patientRepository.save(patient);
         return true;

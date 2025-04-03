@@ -3,32 +3,26 @@ package com.sdgp.MediPass.util;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
 import java.util.function.Function;
-import javax.crypto.SecretKey;
 
 @Component
 public class JwtUtil {
+    // Use a strong key (256 bits minimum for HS256)
     private static final String SECRET = "c7D9JvN3T5kM1qX8yL4zR2pW0aV6oBfH";
     private static final long EXPIRATION_TIME = 21600000; // 6 hours
 
-    // Extract mediId from JWT token
+    // Extract the subject (mediId) from the token
     public String extractMediId(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    // Extract any claim
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
+        return claims != null ? claimsResolver.apply(claims) : null;
     }
 
     private Claims extractAllClaims(String token) {
-//        return Jwts.parser()
-//                .setSigningKey(SECRET)
-//                .parseClaimsJws(token),
-//                .getBody();
         try {
             return Jwts.parser()
                     .setSigningKey(SECRET.getBytes())
@@ -36,12 +30,12 @@ public class JwtUtil {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (JwtException e) {
+            // Token invalid or expired
             return null;
         }
-
     }
 
-    public static String generateToken(String mediId) {
+    public String generateToken(String mediId) {
         return Jwts.builder()
                 .setSubject(mediId)
                 .setIssuedAt(new Date())
@@ -50,6 +44,7 @@ public class JwtUtil {
                 .compact();
     }
 
+    // Static validation method for the filter
     public static String validateToken(String token) {
         try {
             return Jwts.parser()

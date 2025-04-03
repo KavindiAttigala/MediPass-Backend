@@ -3,9 +3,10 @@ package com.sdgp.MediPass.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name="Patient")
+@Table(name = "Patient")
 public class Patient {
     @Id
     @GeneratedValue(generator = "IdGenerator")
@@ -23,15 +24,23 @@ public class Patient {
     private String address;
     private String bloodGroup;
     private String gender;
+
     @Column(columnDefinition = "double precision")
     private double height;
+
     @Column(columnDefinition = "double precision")
     private double weight;
+
     private String allergy;
+
     @Column(columnDefinition = "TEXT")
     @Lob
     private String profilePicture;
 
+    // One patient can have many medical notes mapped by the 'patient' field.
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @JsonIgnore  // Prevents lazy-loading errors during JSON serialization
+    private List<MedicalNotes> medicalNotes;
 
     public Patient(String firstName, String lastName, String email, String nic, String contactNumber, String password) {
         this.firstName = firstName;
@@ -63,27 +72,15 @@ public class Patient {
     }
 
     public Patient() {
-
     }
 
-    //one patient can have many medical notes where medical notes is mapped by 'patient' field.
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-    private List<MedicalNotes> medicalNotes;
-
-    public List<MedicalNotes> getMedicalNotes() {
-        return medicalNotes;
-    }
-
-    public void setMedicalNotes(List<MedicalNotes> medicalNotes) {
-        this.medicalNotes = medicalNotes;
+    // Corrected setter: using "this.mediId" ensures the instance field is updated.
+    public void setMediId(long mediId) {
+        this.mediId = mediId;
     }
 
     public long getMediId() {
         return mediId;
-    }
-
-    public void setMediId(long mediId) {
-        mediId = mediId;
     }
 
     public String getFirstName() {
@@ -93,6 +90,8 @@ public class Patient {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
+    // ... Other getters and setters ...
 
     public String getLastName() {
         return lastName;
@@ -204,5 +203,13 @@ public class Patient {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public List<MedicalNotes> getMedicalNotes() {
+        return medicalNotes;
+    }
+
+    public void setMedicalNotes(List<MedicalNotes> medicalNotes) {
+        this.medicalNotes = medicalNotes;
     }
 }
