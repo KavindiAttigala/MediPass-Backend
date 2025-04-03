@@ -59,9 +59,9 @@ public class GuestDoctorController {
         if(!otpService.verifyOTP(mediId,otp)){
             return ResponseEntity.badRequest().body("Invalid OTP");
         }
-
+        
         //each guest doctor session is stored before adding medical notes
-        GuestDoctor savedDoctor = guestDoctorService.saveDoctorDetails(mediId, guestDoctor);
+        GuestDoctor savedDoctor = guestDoctorService.saveDoctor(guestDoctor);
         return ResponseEntity.ok(savedDoctor);  //Returns JSON object instead of String
     }
 }
