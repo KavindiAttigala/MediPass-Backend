@@ -32,16 +32,16 @@ public class GuestDoctorController {
     @ApiOperation(value = "Storing guest doctor login info in the DB")
     @PostMapping("/access")
     public ResponseEntity<?> doctorAccess(@RequestHeader(value = "Authorization", required = false) String token,
-                                               @RequestParam long mediId, @RequestParam String otp, @RequestBody GuestDoctor guestDoctor){
+                                               @RequestParam long mediId, @RequestBody GuestDoctor guestDoctor){
         //validate the format of the token
         if (token == null || !token.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid token");
         }
 
         String jwtToken = token.substring(7);     // Extract the token part
-        String extractedMediId = jwtUtil.extractMediId(jwtToken);   // Validate the token and extract mediId from it
 
         //validate and extract mediId from the token
+        String extractedMediId = jwtUtil.extractMediId(jwtToken);
         if (extractedMediId == null || !extractedMediId.equals(String.valueOf(mediId))) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
         }
@@ -51,14 +51,10 @@ public class GuestDoctorController {
             return ResponseEntity.badRequest().body("Invalid MediID");
         }
 
-        //Link guestDoctor to Patient
-        Patient patient = patientOptional.get();
-        guestDoctor.setPatient(patient);
-
-        //verify OTP access
-        if(!otpService.verifyOTP(mediId,otp)){
-            return ResponseEntity.badRequest().body("Invalid OTP");
-        }
+//        //verify OTP access
+//        if(!otpService.verifyOTP(mediId,otp)){
+//            return ResponseEntity.badRequest().body("Invalid OTP");
+//        }
         
         //each guest doctor session is stored before adding medical notes
         GuestDoctor savedDoctor = guestDoctorService.saveDoctor(guestDoctor);

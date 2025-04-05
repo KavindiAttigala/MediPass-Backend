@@ -154,7 +154,7 @@ public class PatientService {
         msg.setText(" Welcome "+ firstName + " " + lastName
                 + " You have successfully completed the sign up process. To complete setting up your MediPass account use the following MediID. "
                 + "We advice you to not share your MediID with anyone. \n\n"
-                + "Your MediID is: "+mediId);
+                + "Your MediID is: "+mediId+"\n\nMediPass \nSmart Records Smarter Care.");
         mailSender.send(msg);
     }
 
