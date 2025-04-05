@@ -2,6 +2,7 @@ package com.sdgp.MediPass.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
 @Entity
@@ -68,6 +69,7 @@ public class Patient {
 
     //one patient can have many medical notes where medical notes is mapped by 'patient' field.
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<MedicalNotes> medicalNotes;
 
     public List<MedicalNotes> getMedicalNotes() {
@@ -83,7 +85,7 @@ public class Patient {
     }
 
     public void setMediId(long mediId) {
-        mediId = mediId;
+        this.mediId = mediId;
     }
 
     public String getFirstName() {

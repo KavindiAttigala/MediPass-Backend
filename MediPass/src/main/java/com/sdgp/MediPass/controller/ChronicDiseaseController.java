@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -24,58 +25,65 @@ public class ChronicDiseaseController {
     @Autowired
     private JwtUtil jwtUtil;
 
+//    private ResponseEntity<String> validateToken(String token) {
+//        if (token == null || !token.startsWith("Bearer ")) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid token");
+//        }
+//        String actualToken = token.substring(7);
+//        String mediId = jwtUtil.extractMediId(actualToken);
+//        if (mediId == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+//        }
+//        return ResponseEntity.ok(mediId);  // Return extracted MediID if valid
+//    }
 
     //validate the extracted token
-    private ResponseEntity<String> validateToken(String token) {
+    private long extractMediId(String token) {
         if (token == null || !token.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid token");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid token");
         }
         String actualToken = token.substring(7);
         String mediId = jwtUtil.extractMediId(actualToken);
         if (mediId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
         }
-        return ResponseEntity.ok(mediId);  // Return extracted MediID if valid
+        return Long.parseLong(mediId);
     }
+
 
 
     @ApiOperation(value = "Storing chronic disease records in DB")
     @PostMapping("/add-disease")
-    public ResponseEntity<?> addDisease(@RequestHeader(value = "Authorization", required = false) String token,@RequestParam long mediId, @RequestParam String diseaseName){
-        ResponseEntity<String> validateToken = validateToken(token);
-        if(!validateToken.getStatusCode().is2xxSuccessful()){
-            return validateToken;
-        }
-        try{
-            ChronicDisease chronic = chronicService.addDisease(mediId,diseaseName);
+    public ResponseEntity<?> addDisease(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam String diseaseName){
+        long mediId = extractMediId(token);
+        try {
+            ChronicDisease chronic = chronicService.addDisease(mediId, diseaseName);
             return ResponseEntity.ok(chronic);
-        }catch(IOException e){
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
 
     @ApiOperation(value = "Storing the medications of chronic diseases")
     @PostMapping("/add-medication")
-    public ResponseEntity<?> addMedication(@RequestHeader(value = "Authorization", required = false) String token,@RequestParam long mediId, @RequestParam String medication, @RequestParam int dosage, @RequestParam LocalDate start, @RequestParam LocalDate end){
-        ResponseEntity<String> validateToken = validateToken(token);
-        if(!validateToken.getStatusCode().is2xxSuccessful()){
-            return validateToken;
-        }try{
+    public ResponseEntity<?> addMedication(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam String medication, @RequestParam int dosage, @RequestParam LocalDate start, @RequestParam LocalDate end){
+        long mediId = extractMediId(token);
+        try {
             ChronicDisease chronicDisease = chronicService.addMedication(mediId, medication, dosage, start, end);
             return ResponseEntity.ok(chronicDisease);
-        }catch(IOException e){
+        } catch (RuntimeException | IOException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @ApiOperation(value = "Retrieving chronic disease records from DB")
     @GetMapping("/get-disease")
-    public ResponseEntity<?> getDisease(@RequestHeader(value = "Authorization", required = false) String token,@RequestParam long mediId) {
-        ResponseEntity<String> validateToken = validateToken(token);
-        if(!validateToken.getStatusCode().is2xxSuccessful()){
-            return validateToken;
-        }try {
+    public ResponseEntity<?> getDisease(@RequestHeader(value = "Authorization", required = false) String token) {
+        long mediId = extractMediId(token);
+        try {
             List<ChronicDisease> diseases = chronicService.getDisease(mediId);
             return ResponseEntity.ok(diseases);
         } catch (IllegalArgumentException e) {
@@ -85,11 +93,9 @@ public class ChronicDiseaseController {
 
     @ApiOperation(value = "Retrieve all medications for a specific chronic disease")
     @GetMapping("/get-medications")
-    public ResponseEntity<?> getMedications(@RequestHeader(value = "Authorization", required = false) String token,@RequestParam long mediId, @RequestParam String diseaseName) {
-        ResponseEntity<String> validateToken = validateToken(token);
-        if(!validateToken.getStatusCode().is2xxSuccessful()){
-            return validateToken;
-        }try {
+    public ResponseEntity<?> getMedications(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam String diseaseName) {
+        long mediId = extractMediId(token);
+        try {
             List<String> medications = chronicService.getMedications(mediId, diseaseName);
             return ResponseEntity.ok(medications);
         } catch (IllegalArgumentException e) {
