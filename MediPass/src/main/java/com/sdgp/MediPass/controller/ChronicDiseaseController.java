@@ -25,18 +25,6 @@ public class ChronicDiseaseController {
     @Autowired
     private JwtUtil jwtUtil;
 
-//    private ResponseEntity<String> validateToken(String token) {
-//        if (token == null || !token.startsWith("Bearer ")) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid token");
-//        }
-//        String actualToken = token.substring(7);
-//        String mediId = jwtUtil.extractMediId(actualToken);
-//        if (mediId == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
-//        }
-//        return ResponseEntity.ok(mediId);  // Return extracted MediID if valid
-//    }
-
     //validate the extracted token
     private long extractMediId(String token) {
         if (token == null || !token.startsWith("Bearer ")) {
@@ -65,7 +53,6 @@ public class ChronicDiseaseController {
             throw new RuntimeException(e);
         }
     }
-
 
     @ApiOperation(value = "Storing the medications of chronic diseases")
     @PostMapping("/add-medication")

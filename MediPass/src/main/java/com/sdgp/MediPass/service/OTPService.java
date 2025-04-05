@@ -79,7 +79,7 @@ public class OTPService {
         msg.setSubject("Forgot password verification");
         msg.setText(" We have received a request to reset your MediPass account password."
                 + " Use the following OTP code to reset your password. We advice you to not share this OTP with anyone.\n\n"
-                + "Your OTP code is: "+otp);
+                + "Your OTP code is: "+otp+"\n\nMediPass \nSmart Records Smarter Care.");
         mailSender.send(msg);
     }
 
@@ -89,7 +89,7 @@ public class OTPService {
         msg.setSubject("Authorize Doctor Access");
         msg.setText(" We have received a request to allow access to view your MediPass account by a medical professional. They will have access to your medical records util they exit the session."
                 + " If you want to allow access use the following OTP code. We advice you to not share this OTP with anyone.\n\n"
-                + "Your OTP code is: "+otp);
+                + "Your OTP code is: "+otp+"\n\nMediPass \nSmart Records Smarter Care.");
         mailSender.send(msg);
     }
 
