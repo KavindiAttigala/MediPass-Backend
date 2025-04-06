@@ -56,20 +56,6 @@ public class ChronicDiseaseController {
         }
     }
 
-    @ApiOperation(value = "Storing the medications of chronic diseases")
-    @PostMapping("/add-medication")
-    public ResponseEntity<?> addMedication(@RequestHeader(value = "Authorization", required = false) String token,
-                                           @RequestParam String medication, @RequestParam int dosage,
-                                           @RequestParam LocalDate start, @RequestParam LocalDate end){
-        long mediId = extractMediId(token);
-        try {
-            ChronicDisease chronicDisease = chronicService.addMedication(mediId, medication, dosage, start, end);
-            return ResponseEntity.ok(chronicDisease);
-        } catch (RuntimeException | IOException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @ApiOperation(value = "Retrieving chronic disease records from DB")
     @GetMapping("/get-disease")
     public ResponseEntity<?> getDisease(@RequestHeader(value = "Authorization", required = false) String token) {
@@ -77,18 +63,6 @@ public class ChronicDiseaseController {
         try {
             List<ChronicDisease> diseases = chronicService.getDisease(mediId);
             return ResponseEntity.ok(diseases);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @ApiOperation(value = "Retrieve all medications for a specific chronic disease")
-    @GetMapping("/get-medications")
-    public ResponseEntity<?> getMedications(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam String diseaseName) {
-        long mediId = extractMediId(token);
-        try {
-            List<String> medications = chronicService.getMedications(mediId, diseaseName);
-            return ResponseEntity.ok(medications);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
