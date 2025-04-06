@@ -39,13 +39,15 @@ public class ChronicDiseaseController {
     }
 
 
-
     @ApiOperation(value = "Storing chronic disease records in DB")
     @PostMapping("/add-disease")
-    public ResponseEntity<?> addDisease(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam String diseaseName){
+    public ResponseEntity<?> addDisease(@RequestHeader(value = "Authorization", required = false) String token,
+                                        @RequestParam String diseaseName,
+                                        @RequestParam String medication, @RequestParam int dosage,
+                                        @RequestParam LocalDate start, @RequestParam LocalDate end){
         long mediId = extractMediId(token);
         try {
-            ChronicDisease chronic = chronicService.addDisease(mediId, diseaseName);
+            ChronicDisease chronic = chronicService.addDiseaseRecords(diseaseName, mediId, medication, dosage, start,end);
             return ResponseEntity.ok(chronic);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -56,7 +58,9 @@ public class ChronicDiseaseController {
 
     @ApiOperation(value = "Storing the medications of chronic diseases")
     @PostMapping("/add-medication")
-    public ResponseEntity<?> addMedication(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam String medication, @RequestParam int dosage, @RequestParam LocalDate start, @RequestParam LocalDate end){
+    public ResponseEntity<?> addMedication(@RequestHeader(value = "Authorization", required = false) String token,
+                                           @RequestParam String medication, @RequestParam int dosage,
+                                           @RequestParam LocalDate start, @RequestParam LocalDate end){
         long mediId = extractMediId(token);
         try {
             ChronicDisease chronicDisease = chronicService.addMedication(mediId, medication, dosage, start, end);

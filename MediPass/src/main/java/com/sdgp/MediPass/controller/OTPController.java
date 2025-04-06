@@ -95,7 +95,8 @@ public class OTPController {
     @ApiOperation(value = "Verify the OTP for the doctor login")
     @PostMapping("/verifyDoctorAccessOTP")
     //verify the doctor login OTP
-    public ResponseEntity<String> verifyDoctorAccessOTP( @RequestHeader(value = "Authorization", required = false) String token, @RequestParam long mediId, @RequestParam String otp){
+    public ResponseEntity<String> verifyDoctorAccessOTP( @RequestHeader(value = "Authorization", required = false) String token,
+                                                         @RequestParam long mediId, @RequestParam String otp){
         ResponseEntity<String> validateToken = validateToken(token);
         if(!validateToken.getStatusCode().is2xxSuccessful()){
             return validateToken;
