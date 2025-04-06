@@ -76,21 +76,48 @@ public class PatientService {
 
     public Patient updatePatient(long id, Patient updatedPatient) {
         return patientRepository.findById(id).map(patient -> {
-            patient.setFirstName(updatedPatient.getFirstName());
-            patient.setLastName(updatedPatient.getLastName());
-            patient.setEmail(updatedPatient.getEmail());
-            patient.setNic(updatedPatient.getNic());
-            patient.setContactNumber(updatedPatient.getContactNumber());
-            patient.setPassword(updatedPatient.getPassword());
-            patient.setRole(updatedPatient.getRole());
-            patient.setBirthday(updatedPatient.getBirthday());
-            patient.setAddress(updatedPatient.getAddress());
-            patient.setBloodGroup(updatedPatient.getBloodGroup());
-            patient.setGender(updatedPatient.getGender());
+            if (updatedPatient.getFirstName() != null) {
+                patient.setFirstName(updatedPatient.getFirstName());
+            }
+            if (updatedPatient.getLastName() != null) {
+                patient.setLastName(updatedPatient.getLastName());
+            }
+            if (updatedPatient.getEmail() != null) {
+                patient.setEmail(updatedPatient.getEmail());
+            }
+            if (updatedPatient.getNic() != null) {
+                patient.setNic(updatedPatient.getNic());
+            }
+            if (updatedPatient.getContactNumber() != null) {
+                patient.setContactNumber(updatedPatient.getContactNumber());
+            }
+            if (updatedPatient.getPassword() != null) {
+                patient.setPassword(updatedPatient.getPassword());
+            }
+            if (updatedPatient.getRole() != null) {
+                patient.setRole(updatedPatient.getRole());
+            }
+            if (updatedPatient.getBirthday() != null) {
+                patient.setBirthday(updatedPatient.getBirthday());
+            }
+            if (updatedPatient.getAddress() != null) {
+                patient.setAddress(updatedPatient.getAddress());
+            }
+            if (updatedPatient.getBloodGroup() != null) {
+                patient.setBloodGroup(updatedPatient.getBloodGroup());
+            }
+            if (updatedPatient.getGender() != null) {
+                patient.setGender(updatedPatient.getGender());
+            }
+            // For numeric fields, update them regardless (or add additional checks if needed)
             patient.setHeight(updatedPatient.getHeight());
             patient.setWeight(updatedPatient.getWeight());
-            patient.setAllergy(updatedPatient.getAllergy());
-            patient.setProfilePicture(updatedPatient.getProfilePicture());
+            if (updatedPatient.getAllergy() != null) {
+                patient.setAllergy(updatedPatient.getAllergy());
+            }
+            if (updatedPatient.getProfilePicture() != null) {
+                patient.setProfilePicture(updatedPatient.getProfilePicture());
+            }
             return patientRepository.save(patient);
         }).orElse(null);
     }

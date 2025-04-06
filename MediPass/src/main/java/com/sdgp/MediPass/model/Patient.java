@@ -3,6 +3,7 @@ package com.sdgp.MediPass.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 @Entity
@@ -24,15 +25,26 @@ public class Patient {
     private String address;
     private String bloodGroup;
     private String gender;
+
     @Column(columnDefinition = "double precision")
     private double height;
+
     @Column(columnDefinition = "double precision")
     private double weight;
+
     private String allergy;
+
     @Column(columnDefinition = "TEXT")
     @Lob
     private String profilePicture;
 
+    // One patient can have many medical notes.
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<MedicalNotes> medicalNotes;
+
+    // Constructors
+    public Patient() { }
 
     public Patient(String firstName, String lastName, String email, String nic, String contactNumber, String password) {
         this.firstName = firstName;
@@ -63,22 +75,7 @@ public class Patient {
         this.medicalNotes = medicalNotes;
     }
 
-    public Patient() {
-
-    }
-
-    //one patient can have many medical notes where medical notes is mapped by 'patient' field.
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<MedicalNotes> medicalNotes;
-
-    public List<MedicalNotes> getMedicalNotes() {
-        return medicalNotes;
-    }
-
-    public void setMedicalNotes(List<MedicalNotes> medicalNotes) {
-        this.medicalNotes = medicalNotes;
-    }
+    // Getters and Setters
 
     public long getMediId() {
         return mediId;
@@ -206,5 +203,23 @@ public class Patient {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public List<MedicalNotes> getMedicalNotes() {
+        return medicalNotes;
+    }
+
+    public void setMedicalNotes(List<MedicalNotes> medicalNotes) {
+        this.medicalNotes = medicalNotes;
+    }
+
+    // Expose a computed "fullName" in the JSON response.
+    @JsonProperty("fullName")
+    @Transient
+    public String getFullName() {
+        // Safely concatenate firstName and lastName
+        String fName = (firstName != null) ? firstName : "";
+        String lName = (lastName != null) ? lastName : "";
+        return (fName + " " + lName).trim();
     }
 }
