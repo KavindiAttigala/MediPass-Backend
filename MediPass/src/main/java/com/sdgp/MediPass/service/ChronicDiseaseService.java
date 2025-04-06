@@ -20,18 +20,21 @@ public class ChronicDiseaseService {
         this.patientRepo = patientRepo;
     }
 
-    public ChronicDisease addDisease(long mediId, String diseaseName) throws IOException{
-        Optional<Patient> patientOptional = patientRepo.findById(mediId);       //retrieve patient from the DB
-        if(patientOptional.isEmpty()){
-            throw new IllegalArgumentException("Patient with mediId "+ mediId+" not found.");
+    public ChronicDisease addDiseaseRecords(String diseaseName ,long mediId, String medication, int dosage, LocalDate start, LocalDate end) throws IOException {
+        Optional<Patient> patientOptional = patientRepo.findById(mediId);
+        if (patientOptional.isEmpty()){
+            throw new IllegalArgumentException("Patient with mediId "+mediId+" not found");
         }
 
-        ChronicDisease chronic = new ChronicDisease();
-        chronic.setDiseaseName(diseaseName);
-        chronic.setDate(LocalDate.now());   //automatically set current date
-        chronic.setPatient(patientOptional.get());
+        ChronicDisease chronicDisease = new ChronicDisease();
+        chronicDisease.setDiseaseName(diseaseName);
+        chronicDisease.setMedication(medication);
+        chronicDisease.setDosage(dosage);
+        chronicDisease.setStartDate(start);
+        chronicDisease.setEndDate(end);
+        chronicDisease.setPatient(patientOptional.get());
 
-        return chroDiseRepo.save(chronic);
+        return chroDiseRepo.save(chronicDisease);
     }
 
     public ChronicDisease addMedication(long mediId, String medication, int dosage, LocalDate start, LocalDate end) throws IOException{

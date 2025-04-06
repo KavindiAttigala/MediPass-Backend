@@ -15,7 +15,9 @@ public class JwtUtil {
 
     // Extract mediId from JWT token
     public String extractMediId(String token) {
-        return extractClaim(token, Claims::getSubject);
+        Claims claims = extractAllClaims(token);
+        return (claims != null) ? claims.getSubject() : null;
+        //return extractClaim(token, Claims::getSubject);
     }
 
     // Extract any claim

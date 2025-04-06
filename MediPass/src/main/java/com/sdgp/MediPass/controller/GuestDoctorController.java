@@ -31,19 +31,17 @@ public class GuestDoctorController {
 
     @ApiOperation(value = "Storing guest doctor login info in the DB")
     @PostMapping("/access")
-    public ResponseEntity<String> doctorAccess(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam long mediId, @RequestParam String otp, @RequestBody GuestDoctor guestDoctor){
+    public ResponseEntity<?> doctorAccess(@RequestHeader(value = "Authorization", required = false) String token,
+                                               @RequestParam long mediId, @RequestBody GuestDoctor guestDoctor){
         //validate the format of the token
         if (token == null || !token.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid token");
         }
 
-        // Extract the token part
-        String jwtToken = token.substring(7);
-
-        // Validate the token and extract mediId from it
-        String extractedMediId = jwtUtil.extractMediId(jwtToken);
+        String jwtToken = token.substring(7);     // Extract the token part
 
         //validate and extract mediId from the token
+        String extractedMediId = jwtUtil.extractMediId(jwtToken);
         if (extractedMediId == null || !extractedMediId.equals(String.valueOf(mediId))) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
         }
@@ -53,13 +51,13 @@ public class GuestDoctorController {
             return ResponseEntity.badRequest().body("Invalid MediID");
         }
 
-        //verify OTP access
-        if(!otpService.verifyOTP(mediId,otp)){
-            return ResponseEntity.badRequest().body("Invalid OTP");
-        }
-
+//        //verify OTP access
+//        if(!otpService.verifyOTP(mediId,otp)){
+//            return ResponseEntity.badRequest().body("Invalid OTP");
+//        }
+        
         //each guest doctor session is stored before adding medical notes
         GuestDoctor savedDoctor = guestDoctorService.saveDoctor(guestDoctor);
-        return ResponseEntity.ok(String.valueOf(savedDoctor));
+        return ResponseEntity.ok(savedDoctor);  //Returns JSON object instead of String
     }
 }

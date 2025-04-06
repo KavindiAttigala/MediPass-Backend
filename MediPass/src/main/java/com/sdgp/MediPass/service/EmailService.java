@@ -24,6 +24,7 @@ public class EmailService {
         message.setSubject("MediPass Registration is Successful");
         message.setText("Welcome to MediPass\n" +
                 "Dear"+firstName+", \n\n"+"You have successfully completed the registration process of MediPass application. Now to proceed further login with your MediID: "+mediId+"\n\n"+"We recommend that you keep this MediID confidential.\n"+"Thank you for using MediPass Application");
+        mailSender.send(message);
     }
 }
 
