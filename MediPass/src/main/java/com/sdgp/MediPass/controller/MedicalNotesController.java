@@ -56,8 +56,7 @@ public class MedicalNotesController {
     //ResponseEntity<?> is a generic return type to send HTTP responses (HTTP status code, Response body, Headers)
     @ApiOperation(value = "Retrieving the medical notes")
     @GetMapping("/get-notes")
-    public ResponseEntity<?> getMedicalNotes(@RequestHeader("Authorization") String token,@PathVariable Long mediId){
-
+    public ResponseEntity<?> getMedicalNotes(@RequestHeader("Authorization") String token,@RequestParam Long mediId){
         try{
             long extractedToken = validateToken(token);
             if (!Objects.equals(extractedToken, mediId)) {
