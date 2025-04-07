@@ -51,6 +51,7 @@ public class MedicalNotesService {
         return notesRepo.save(note);
     }
 
+    @Transactional //handle lazy loading and session management
     public List<MedicalNotes> getNotes(Long mediId) {
         // Fetch the patient by mediId from the repository
         Optional<Patient> patientOptional = patientRepo.findByMediId(mediId);
@@ -59,7 +60,7 @@ public class MedicalNotesService {
         }
 
         // Fetch all medical notes for the given patient
-        List<MedicalNotes> notes = notesRepo.findByPatientMediId(mediId);
+        List<MedicalNotes> notes = notesRepo.findByPatient_MediId(mediId);
 
         return notes;
     }
