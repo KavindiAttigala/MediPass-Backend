@@ -21,6 +21,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Build with Maven
+      working-directory: MediPass-Backend 
       run: mvn clean package -DskipTests
 
     - name: Upload JAR as Artifact
