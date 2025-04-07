@@ -1,5 +1,6 @@
 package com.sdgp.MediPass.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -13,7 +14,8 @@ public class MedicalNotes {
     private Long id;
 
     @ManyToOne
-    @JoinColumn (name="patientId", nullable = false)      // Foreign key for patient
+    @JoinColumn (name="patientId", nullable = false)// Foreign key for patient
+    @JsonIgnore  //This will prevent patient details from being serialized in the output
     private Patient patient;
 
     @ManyToOne
@@ -22,9 +24,6 @@ public class MedicalNotes {
 
     private LocalDate date;
     private String textContent;
-    private String fileName;
-    private String fileType;
-    private String filePath;
 
     public GuestDoctor getGuestDoctor() {
         return guestDoctor;
@@ -66,27 +65,4 @@ public class MedicalNotes {
         this.textContent = textContent;
     }
 
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFileType() {
-        return fileType;
-    }
-
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
 }
