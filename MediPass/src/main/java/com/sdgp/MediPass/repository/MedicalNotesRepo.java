@@ -7,7 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MedicalNotesRepo extends JpaRepository<MedicalNotes, Long> {
-    List<MedicalNotes> findByPatient(Patient patient);
-
-    List<MedicalNotes> findByPatientMediId(Long mediId);
+    List<MedicalNotes> findByPatient_MediId(Long mediId);
 }

@@ -53,22 +53,40 @@ public class MedicalNotesController {
         }
     }
 
-    //ResponseEntity<?> is a generic return type to send HTTP responses (HTTP status code, Response body, Headers)
     @ApiOperation(value = "Retrieving the medical notes")
     @GetMapping("/get-notes")
-    public ResponseEntity<?> getMedicalNotes(@RequestHeader("Authorization") String token,@PathVariable Long mediId){
+    public ResponseEntity<?> getMedicalNotes(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(value = "mediId", required = false) String mediIdParam) {
+        try {
+            // Extract mediId from the token
+            long mediIdFromToken = validateToken(token);
+            long mediIdLong;
 
-        try{
-            long extractedToken = validateToken(token);
-            if (!Objects.equals(extractedToken, mediId)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired Token");
+            // If mediId is provided in the query parameter, use it;
+            // Otherwise, fall back to the mediId extracted from the token.
+            if (mediIdParam == null || mediIdParam.trim().isEmpty()) {
+                mediIdLong = mediIdFromToken;
+            } else {
+                try {
+                    mediIdLong = Long.parseLong(mediIdParam);
+                } catch (NumberFormatException e) {
+                    return ResponseEntity.badRequest().body("Invalid mediId format");
+                }
+                // Optional: Ensure that the provided mediId matches the token's mediId
+                if (!Objects.equals(mediIdFromToken, mediIdLong)) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                            .body("Token mediId does not match provided mediId");
+                }
             }
 
-            return ResponseEntity.ok(mediNotesService.getNotes(mediId));
-        } catch (IllegalArgumentException e){
+            return ResponseEntity.ok(mediNotesService.getNotes(mediIdLong));
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
+
 }
