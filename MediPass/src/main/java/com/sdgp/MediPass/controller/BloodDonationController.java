@@ -34,7 +34,8 @@ public class BloodDonationController {
 
     @ApiOperation(value = "Add a new blood donation record", notes = "Submit patient blood donation records to store in the database")
     @PostMapping("/add-B-records/mediId/{mediId}")
-    public ResponseEntity<String> addBloodDonation(@RequestHeader(value = "Authorization", required = false) String token,@PathVariable long mediId, @RequestBody BloodDonationRecords bloodDonation){
+    public ResponseEntity<String> addBloodDonation(@RequestHeader(value = "Authorization", required = false) String token,
+                                                   @PathVariable long mediId, @RequestBody BloodDonationRecords bloodDonation){
         ResponseEntity<String> validateToken = validateToken(token);
         if(!validateToken.getStatusCode().is2xxSuccessful()){
             return validateToken;
