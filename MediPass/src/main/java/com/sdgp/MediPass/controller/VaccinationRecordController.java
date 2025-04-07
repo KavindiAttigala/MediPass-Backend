@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 import static com.sdgp.MediPass.controller.OTPController.extractMediId;
 
@@ -25,48 +26,39 @@ public class VaccinationRecordController {
 
 
     //validate the extracted token
-    private long extractMediId(String token) {
-        if (token == null || !token.startsWith("Bearer ")) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid token");
-        }
-        String actualToken = token.substring(7);
-        String mediId = jwtUtil.extractMediId(actualToken);
-        if (mediId == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
-        }
-        return Long.parseLong(mediId);
+    private ResponseEntity<String> validateToken(String token) {
+        return extractMediId(token, jwtUtil);
     }
-//    private ResponseEntity<String> validateToken(String token) {
-//        return extractMediId(token, jwtUtil);
-//    }
 
     @ApiOperation(value = "Storing vaccination records")
-    @PostMapping("/add-V-records")
-    public ResponseEntity<?> addVaccinationRecords(
-            @RequestHeader(value = "Authorization", required = false) String token,
-            @RequestBody VaccinationRecords vaccinationRecords) {
-
-        try {
-            long mediId = extractMediId(token);
-            VaccinationRecords savedRecords = vaccinationRecordService.addVaccinationRecords(mediId, vaccinationRecords);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedRecords);
-        } catch (ResponseStatusException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
-        } catch (RuntimeException e) {
+    @PostMapping("/add-V-records/mediId/{mediId}")
+    public ResponseEntity<? extends Object> addVaccinationRecords(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable long mediId, @RequestBody VaccinationRecords vaccinationRecords){
+        ResponseEntity<String> validateToken = validateToken(token);
+        if(!validateToken.getStatusCode().is2xxSuccessful()){
+            return validateToken;
+        }try{
+            VaccinationRecords savedRecords= vaccinationRecordService.addVaccinationRecords(mediId,vaccinationRecords);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedRecords);    }
+        catch(RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+
     }
 
-    @ApiOperation(value = "Retrieving vaccination records")
-    @GetMapping("/get-V-records")
-    public ResponseEntity<?> getAllVaccinationRecords(@RequestHeader(value = "Authorization", required = false) String token) {
+    @GetMapping("/get-V-records/mediId/{mediId}")
+    public ResponseEntity<List<VaccinationRecords>> getAllVaccinationRecords(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @PathVariable long mediId
+    ) {
+        ResponseEntity<String> validateToken = validateToken(token);
+        if (!validateToken.getStatusCode().is2xxSuccessful()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         try {
-            long mediId = extractMediId(token);
-            return ResponseEntity.ok(vaccinationRecordService.getAllVaccinationRecords(mediId).toString());
-        } catch (ResponseStatusException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+            List<VaccinationRecords> records = vaccinationRecordService.getAllVaccinationRecords(mediId);
+            return ResponseEntity.ok(records);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 

@@ -1,5 +1,6 @@
 package com.sdgp.MediPass.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -17,8 +18,8 @@ public class BloodDonationRecords {
     private long mediId;
 
     @ManyToOne      //since many blood donation records can be associated with one patient
-//    @JoinColumn(name = "mediIdBD", nullable = false)     //FK referring to the MediId(PK) in Patient table
     @JoinColumn(name = "mediIdBD", referencedColumnName = "mediId", nullable = false)
+    @JsonIgnore
     private Patient patient;
 
     public BloodDonationRecords(Long donationId, String donationNumber, LocalDate date, String place, long mediId, Patient patient) {
@@ -74,14 +75,6 @@ public class BloodDonationRecords {
         this.place = place;
     }
 
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
     public long getMediId() {
         return mediId;
     }
@@ -90,6 +83,11 @@ public class BloodDonationRecords {
         this.mediId = mediId;
     }
 
-    public void setPatient(Optional<Patient> patient) {
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 }

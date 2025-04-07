@@ -45,15 +45,15 @@ public class BloodDonationController {
 //    }
 
     @ApiOperation(value = "Add a new blood donation record", notes = "Submit patient blood donation records to store in the database")
-    @PostMapping("/add-B-records")
-    public ResponseEntity<String> addBloodDonation(
+    @PostMapping("/add-BD-records")
+    public ResponseEntity<?> addBloodDonation(
             @RequestHeader(value = "Authorization", required = false) String token,
             @RequestBody BloodDonationRecords bloodDonation) {
 
         try {
             long mediId = extractMediId(token);
             BloodDonationRecords savedDonation = bloodDonationService.saveBDRecords(mediId, bloodDonation);
-            return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(savedDonation));
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedDonation);
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
         } catch (RuntimeException e) {
@@ -62,11 +62,12 @@ public class BloodDonationController {
     }
 
     @ApiOperation(value = "Get all blood donation records", notes = "Retrieve all stored blood donation records")
-    @GetMapping("/get-B-records")
-    public ResponseEntity<String> getAllBloodDonations(@RequestHeader(value = "Authorization", required = false) String token) {
+    @GetMapping("/get-BD-records")
+    public ResponseEntity<?> getAllBloodDonations(@RequestHeader(value = "Authorization", required = false) String token) {
         try {
             long mediId = extractMediId(token);
-            return ResponseEntity.ok(bloodDonationService.getAllDonations(mediId).toString());
+            List<BloodDonationRecords> getRecords = bloodDonationService.getAllDonations(mediId);
+            return ResponseEntity.ok(getRecords);
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
         } catch (RuntimeException e) {
