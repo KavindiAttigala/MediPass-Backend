@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -28,39 +29,48 @@ public class BloodDonationController {
 
 
     //validate the extracted token
-    private ResponseEntity<String> validateToken(String token) {
-        return extractMediId(token, jwtUtil);
+    private long extractMediId(String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid token");
+        }
+        String actualToken = token.substring(7);
+        String mediId = jwtUtil.extractMediId(actualToken);
+        if (mediId == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
+        }
+        return Long.parseLong(mediId);
     }
+//    private ResponseEntity<String> validateToken(String token) {
+//        return extractMediId(token, jwtUtil);
+//    }
 
     @ApiOperation(value = "Add a new blood donation record", notes = "Submit patient blood donation records to store in the database")
-    @PostMapping("/add-B-records/mediId/{mediId}")
-    public ResponseEntity<String> addBloodDonation(@RequestHeader(value = "Authorization", required = false) String token,
-                                                   @PathVariable long mediId, @RequestBody BloodDonationRecords bloodDonation){
-        ResponseEntity<String> validateToken = validateToken(token);
-        if(!validateToken.getStatusCode().is2xxSuccessful()){
-            return validateToken;
-        }try{
-            BloodDonationRecords savedDonation = bloodDonationService.saveBDRecords(mediId,bloodDonation);
-            return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(savedDonation));        }
-        catch(RuntimeException e){
+    @PostMapping("/add-B-records")
+    public ResponseEntity<String> addBloodDonation(
+            @RequestHeader(value = "Authorization", required = true) String token,
+            @RequestBody BloodDonationRecords bloodDonation) {
+
+        try {
+            long mediId = extractMediId(token);
+            BloodDonationRecords savedDonation = bloodDonationService.saveBDRecords(mediId, bloodDonation);
+            return ResponseEntity.status(HttpStatus.CREATED).body(String.valueOf(savedDonation));
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        
     }
 
     @ApiOperation(value = "Get all blood donation records", notes = "Retrieve all stored blood donation records")
-    @GetMapping("/get-B-records/mediId/{mediId}")
-    public ResponseEntity<String> getAllBloodDonations(@RequestHeader(value = "Authorization", required = false) String token,@PathVariable long mediId){
-        ResponseEntity<String> validateToken = validateToken(token);
-        if(!validateToken.getStatusCode().is2xxSuccessful()){
-            return validateToken;
-        }try{
+    @GetMapping("/get-B-records")
+    public ResponseEntity<String> getAllBloodDonations(@RequestHeader(value = "Authorization", required = true) String token) {
+        try {
+            long mediId = extractMediId(token);
             return ResponseEntity.ok(bloodDonationService.getAllDonations(mediId).toString());
-        }
-        catch(RuntimeException e){
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-
     }
 }
