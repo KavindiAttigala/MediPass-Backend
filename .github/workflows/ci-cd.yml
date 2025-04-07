@@ -30,7 +30,8 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: medipass-jar
-        path: MediPass-Backend/target/*.jar
+        path: target/MediPass-0.0.1-SNAPSHOT.jar  # Path to the JAR file relative to the repo
+
 
   deploy:
     needs: build
