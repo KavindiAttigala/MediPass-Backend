@@ -1,5 +1,6 @@
 package com.sdgp.MediPass.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,8 @@ public class GuestDoctor {
     private LocalDateTime date;
 
     //one-to-many relationship between guestDoctor and MedicalNotes where medical notes is mapped by 'DoctorGuestLog' field
-    @OneToMany(mappedBy = "guestDoctor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "guestDoctor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore //Prevent the circular reference during serialization
     private List<MedicalNotes> medicalNotes;
 
     public List<MedicalNotes> getMedicalNotes() {

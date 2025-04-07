@@ -107,7 +107,7 @@ public class OTPController {
             return ResponseEntity.badRequest().body("Invalid mediId or OTP");
         }
 
-        return otpService.verifyOTP(mediId,otp)
+        return otpService.verifyDoctorAccessOTP(mediId,otp)
                 ? ResponseEntity.ok("OTP Verified")         //If verifyOTP() returns true
                 : ResponseEntity.badRequest().body("Invalid OTP");
 

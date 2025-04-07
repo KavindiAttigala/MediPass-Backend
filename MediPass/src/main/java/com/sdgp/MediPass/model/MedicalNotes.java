@@ -1,5 +1,6 @@
 package com.sdgp.MediPass.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -13,7 +14,8 @@ public class MedicalNotes {
     private Long id;
 
     @ManyToOne
-    @JoinColumn (name="patientId", nullable = false)      // Foreign key for patient
+    @JoinColumn (name="patientId", nullable = false)// Foreign key for patient
+    @JsonIgnore  //This will prevent patient details from being serialized in the output
     private Patient patient;
 
     @ManyToOne
