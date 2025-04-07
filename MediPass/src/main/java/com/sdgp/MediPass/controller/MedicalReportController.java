@@ -269,6 +269,20 @@ public class MedicalReportController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/view")
+    public ResponseEntity<?> viewReport(@RequestHeader(value = "Authorization", required = false) String token) {
+        long mediId = extractMediId(token);
+        try {
+            byte[] data = medicalReportService.downloadReport(mediId);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF); // assuming PDF
+            headers.setContentDisposition(ContentDisposition.inline().filename("report_" + mediId + ".pdf").build());
+            return new ResponseEntity<>(data, headers, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
     @ApiOperation(value = "Retrieving all medical reports")
     @GetMapping
@@ -321,6 +335,7 @@ public class MedicalReportController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("/xRay/patient")
     public ResponseEntity<?> getXRayReportsByPatientId(@RequestHeader(value = "Authorization", required = false) String token) {
         long mediId = extractMediId(token);
