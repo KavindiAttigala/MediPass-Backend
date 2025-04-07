@@ -42,6 +42,7 @@ class MedicalNotesServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+
     @Test
     void testSaveNotesSuccess() throws IOException {
         // Given

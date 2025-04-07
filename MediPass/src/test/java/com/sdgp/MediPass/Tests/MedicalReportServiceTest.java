@@ -88,6 +88,7 @@ class MedicalReportServiceTest {
         // When
         MedicalReports savedReport = medicalReportService.saveReport(multipartFile, title, description, reportType, patientId);
 
+
         // Then
         assertNotNull(savedReport);
         assertEquals(title, savedReport.getTitle());
