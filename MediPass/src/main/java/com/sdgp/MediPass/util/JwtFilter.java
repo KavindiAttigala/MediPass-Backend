@@ -4,9 +4,12 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -17,14 +20,11 @@ public class JwtFilter extends OncePerRequestFilter {
         String requestURI = request.getServletPath();
 
         // Skip JWT validation for these endpoints as they do not require authentication
-        if (requestURI.equals("/medipass/auth/register/adult") || requestURI.equals("/medipass/auth/register/child")) {
+        if (requestURI.equals("/medipass/auth/register/adult") || requestURI.equals("/medipass/auth/register/child") ||requestURI.equals("/medipass/auth/login")||
+        requestURI.equals("/medipass/otp/sendOTP") || requestURI.equals("/medipass/otp/verifyOTP") || requestURI.equals("/medipass/otp/reset-password")) {
             filterChain.doFilter(request, response);
             return;
         }
-//        if (requestURI.startsWith("/medipass/")) {
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
 
 
         // Retrieve the Authorization header
@@ -43,6 +43,11 @@ public class JwtFilter extends OncePerRequestFilter {
                     response.sendError(javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
                     return;
                 }
+
+                // Create an authentication object and set it in the Security Context
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(mediId, null, Collections.emptyList());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 // If the token is valid, set the username as a request attribute
                 request.setAttribute("user", mediId);

@@ -5,15 +5,14 @@ import com.sdgp.MediPass.service.MedicalNotesService;
 import com.sdgp.MediPass.util.JwtUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/medipass/medical-notes")
@@ -26,7 +25,7 @@ public class MedicalNotesController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    private String validateToken(String token) throws Exception {
+    private Long validateToken(String token) throws Exception {
         if(token == null || !token.startsWith("Bearer ")){
             throw new Exception("Missing or invalid Token");
         }
@@ -35,27 +34,20 @@ public class MedicalNotesController {
         if(mediId == null){
             throw new Exception("Invalid or expired token");
         }
-        return mediId;
+        return Long.parseLong(mediId);
     }
 
     @ApiOperation(value = "Store the medical noted of the patient in DB")
-    @PostMapping("/add-records")
-    public ResponseEntity<?> addMedicalNotes(@RequestHeader("Authorization") String token, @RequestParam Long mediId,
-                                             @RequestParam(required = false) String textContent,
-                                             @RequestParam(required = false)MultipartFile file){
+    @PostMapping("/add-notes")
+    public ResponseEntity<?> addMedicalNotes(@RequestHeader("Authorization") String token,
+                                             @RequestParam(required = false) String textContent){
         try{
-            String extractedMediId = validateToken(token);
-
-            if(!extractedMediId.equals(mediId)){
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired Token");
-            }
+            long extractedMediId = validateToken(token);
             //save medical notes if the token is valid
-            MedicalNotes savedNotes = mediNotesService.saveNotes(mediId, textContent,file);
+            MedicalNotes savedNotes = mediNotesService.saveNotes(extractedMediId, textContent);
             return ResponseEntity.ok(savedNotes);
         } catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (IOException e) {
-            return ResponseEntity.internalServerError().body("File upload error: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error in saving the note: "+e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -63,12 +55,12 @@ public class MedicalNotesController {
 
     //ResponseEntity<?> is a generic return type to send HTTP responses (HTTP status code, Response body, Headers)
     @ApiOperation(value = "Retrieving the medical notes")
-    @GetMapping("/{mediID}")
+    @GetMapping("/get-notes")
     public ResponseEntity<?> getMedicalNotes(@RequestHeader("Authorization") String token,@PathVariable Long mediId){
-        try{
-            String extractedToken = validateToken(token);
 
-            if(!extractedToken.equals(mediId)){
+        try{
+            long extractedToken = validateToken(token);
+            if (!Objects.equals(extractedToken, mediId)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired Token");
             }
 

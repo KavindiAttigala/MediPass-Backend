@@ -49,7 +49,7 @@ public class OTPService {
         String otp = generateOTP();
         otpStorage.put(mediId, otp);
 
-        sendEmail(email, otp);
+        sendDoctorAccessEmail(email, otp);
         return "OTP sent to the email revelant for the mediId "+ mediId;
     }
 
@@ -61,20 +61,36 @@ public class OTPService {
         return String.format("%04d",otp);    //"%04d" ensures the generated number is always 4 digits
     }
 
+    //verify the otp
+    public boolean verifyOTP(long mediId, String otp){
+//        return otpStorage.containsKey(mediId) && otpStorage.get(mediId).equals(otp);
+        //checks whether map contains an OTP for the given email AND whether the given OTP matches with the one stored in the map
+        boolean isValid = otpStorage.containsKey(mediId) && otpStorage.get(mediId).equals(otp);
+        if(isValid){
+            otpStorage.remove(mediId);  // Remove OTP after verification to avoid reuse
+        }
+        return isValid;
+    }
+
     //send the email the to the relevant patient
     private void sendEmail(String email, String otp){
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(email);
-        msg.setSubject("Your OTP code");
+        msg.setSubject("Forgot password verification");
         msg.setText(" We have received a request to reset your MediPass account password."
-                + " Use the following OTP code to reset yoru password. We advice you to not share this OTP with anyone.\n\n"
-                + "Your OTP code is: "+otp);
+                + " Use the following OTP code to reset your password. We advice you to not share this OTP with anyone.\n\n"
+                + "Your OTP code is: "+otp+"\n\nMediPass \nSmart Records Smarter Care.");
         mailSender.send(msg);
     }
 
-    //verify the otp
-    public boolean verifyOTP(long mediId, String otp){
-        //checks whether map contains an OTP for the given email AND whether the given OTP matches with the one stored in the map
-        return otpStorage.containsKey(mediId) && otpStorage.get(mediId).equals(otp);
+    private void sendDoctorAccessEmail(String email, String otp){
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(email);
+        msg.setSubject("Authorize Doctor Access");
+        msg.setText(" We have received a request to allow access to view your MediPass account by a medical professional. They will have access to your medical records util they exit the session."
+                + " If you want to allow access use the following OTP code. We advice you to not share this OTP with anyone.\n\n"
+                + "Your OTP code is: "+otp+"\n\nMediPass \nSmart Records Smarter Care.");
+        mailSender.send(msg);
     }
+
 }

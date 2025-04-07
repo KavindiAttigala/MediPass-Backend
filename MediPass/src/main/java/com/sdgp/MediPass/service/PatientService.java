@@ -4,6 +4,8 @@ import com.sdgp.MediPass.model.Patient;
 import com.sdgp.MediPass.repository.PatientRepository;
 import com.sdgp.MediPass.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ public class PatientService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private EmailService emailService;
+    private JavaMailSender mailSender;
 
     public Patient registerPatientAdult(Patient patient) {
         // Assuming NIC is the unique identifier. Adjust if needed.
@@ -32,8 +34,9 @@ public class PatientService {
         patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
 
         Patient savedPatient= patientRepository.save(patient);
+
         // Send email with the generated MediId to login
-        emailService.sendMediIdEmail(savedPatient.getEmail(), savedPatient.getMediId(), savedPatient.getFirstName());
+        sendEmail(savedPatient.getEmail(), savedPatient.getMediId(), savedPatient.getFirstName(), savedPatient.getLastName());
         return savedPatient;
     }
 
@@ -46,7 +49,8 @@ public class PatientService {
         patient.setPassword(passwordEncoder.encode(patient.getPassword())); // Encrypt password
         Patient savedPatient= patientRepository.save(patient);
 
-        emailService.sendMediIdEmail(savedPatient.getEmail(), savedPatient.getMediId(), savedPatient.getFirstName());
+        // Send email with the generated MediId to login
+        sendEmail(savedPatient.getEmail(), savedPatient.getMediId(), savedPatient.getFirstName(), savedPatient.getLastName());
         return savedPatient;
     }
 
@@ -72,21 +76,48 @@ public class PatientService {
 
     public Patient updatePatient(long id, Patient updatedPatient) {
         return patientRepository.findById(id).map(patient -> {
-            patient.setFirstName(updatedPatient.getFirstName());
-            patient.setLastName(updatedPatient.getLastName());
-            patient.setEmail(updatedPatient.getEmail());
-            patient.setNic(updatedPatient.getNic());
-            patient.setContactNumber(updatedPatient.getContactNumber());
-            patient.setPassword(updatedPatient.getPassword());
-            patient.setRole(updatedPatient.getRole());
-            patient.setBirthday(updatedPatient.getBirthday());
-            patient.setAddress(updatedPatient.getAddress());
-            patient.setBloodGroup(updatedPatient.getBloodGroup());
-            patient.setGender(updatedPatient.getGender());
+            if (updatedPatient.getFirstName() != null) {
+                patient.setFirstName(updatedPatient.getFirstName());
+            }
+            if (updatedPatient.getLastName() != null) {
+                patient.setLastName(updatedPatient.getLastName());
+            }
+            if (updatedPatient.getEmail() != null) {
+                patient.setEmail(updatedPatient.getEmail());
+            }
+            if (updatedPatient.getNic() != null) {
+                patient.setNic(updatedPatient.getNic());
+            }
+            if (updatedPatient.getContactNumber() != null) {
+                patient.setContactNumber(updatedPatient.getContactNumber());
+            }
+            if (updatedPatient.getPassword() != null) {
+                patient.setPassword(updatedPatient.getPassword());
+            }
+            if (updatedPatient.getRole() != null) {
+                patient.setRole(updatedPatient.getRole());
+            }
+            if (updatedPatient.getBirthday() != null) {
+                patient.setBirthday(updatedPatient.getBirthday());
+            }
+            if (updatedPatient.getAddress() != null) {
+                patient.setAddress(updatedPatient.getAddress());
+            }
+            if (updatedPatient.getBloodGroup() != null) {
+                patient.setBloodGroup(updatedPatient.getBloodGroup());
+            }
+            if (updatedPatient.getGender() != null) {
+                patient.setGender(updatedPatient.getGender());
+            }
+            // For numeric fields, update them regardless (or add additional checks if needed)
             patient.setHeight(updatedPatient.getHeight());
             patient.setWeight(updatedPatient.getWeight());
-            patient.setAllergy(updatedPatient.getAllergy());
-            patient.setProfilePicture(updatedPatient.getProfilePicture());
+            if (updatedPatient.getAllergy() != null) {
+                patient.setAllergy(updatedPatient.getAllergy());
+            }
+            if (updatedPatient.getProfilePicture() != null) {
+                patient.setProfilePicture(updatedPatient.getProfilePicture());
+            }
             return patientRepository.save(patient);
         }).orElse(null);
     }
@@ -141,6 +172,17 @@ public class PatientService {
         patient.setPassword(passwordEncoder.encode(newPassword));
         patientRepository.save(patient);
         return true;
+    }
+
+    private void sendEmail(String email, long mediId, String firstName, String lastName) {
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(email);
+        msg.setSubject("Registration to MediPass is successful");
+        msg.setText(" Welcome "+ firstName + " " + lastName
+                + " You have successfully completed the sign up process. To complete setting up your MediPass account use the following MediID. "
+                + "We advice you to not share your MediID with anyone. \n\n"
+                + "Your MediID is: "+mediId+"\n\nMediPass \nSmart Records Smarter Care.");
+        mailSender.send(msg);
     }
 
     public Optional<Patient> getUserByMediId(long mediId) {
