@@ -24,7 +24,7 @@ jobs:
       run: mvn clean package -DskipTests
 
     - name: Upload JAR as Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: medipass-jar
         path: target/*.jar
