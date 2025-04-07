@@ -47,7 +47,7 @@ public class BloodDonationController {
     @ApiOperation(value = "Add a new blood donation record", notes = "Submit patient blood donation records to store in the database")
     @PostMapping("/add-B-records")
     public ResponseEntity<String> addBloodDonation(
-            @RequestHeader(value = "Authorization", required = true) String token,
+            @RequestHeader(value = "Authorization", required = false) String token,
             @RequestBody BloodDonationRecords bloodDonation) {
 
         try {
@@ -63,7 +63,7 @@ public class BloodDonationController {
 
     @ApiOperation(value = "Get all blood donation records", notes = "Retrieve all stored blood donation records")
     @GetMapping("/get-B-records")
-    public ResponseEntity<String> getAllBloodDonations(@RequestHeader(value = "Authorization", required = true) String token) {
+    public ResponseEntity<String> getAllBloodDonations(@RequestHeader(value = "Authorization", required = false) String token) {
         try {
             long mediId = extractMediId(token);
             return ResponseEntity.ok(bloodDonationService.getAllDonations(mediId).toString());
