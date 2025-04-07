@@ -39,10 +39,11 @@ jobs:
 
     steps:
     - name: Download JAR Artifact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v3
       with:
-        name: medipass-jar
-        path: target/
+        name: medipass-jar  # This should match the name you used for uploading
+        path: target/       # This is where the artifact will be downloaded to
+
 
     - name: Deploy to EC2
       uses: appleboy/scp-action@master
