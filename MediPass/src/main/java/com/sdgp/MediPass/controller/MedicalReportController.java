@@ -220,6 +220,55 @@ public class MedicalReportController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @PostMapping("/upload/XRAY")
+    public ResponseEntity<?> uploadXRAYReport(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description) {
+
+        long mediId = extractMediId(token);
+        try {
+            ReportType reportType = ReportType.XRAY;
+            MedicalReports savedReport = medicalReportService.saveReport(file, title, description, reportType, mediId);
+            return ResponseEntity.ok(savedReport);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/upload/LAB")
+    public ResponseEntity<?> uploadLabReport(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description) {
+
+        long mediId = extractMediId(token);
+        try {
+            ReportType reportType = ReportType.LAB;
+            MedicalReports savedReport = medicalReportService.saveReport(file, title, description, reportType, mediId);
+            return ResponseEntity.ok(savedReport);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/upload/SURGERY")
+    public ResponseEntity<?> uploadSurgeryReport(
+            @RequestHeader(value = "Authorization", required = false) String token,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description) {
+
+        long mediId = extractMediId(token);
+        try {
+            ReportType reportType = ReportType.SURGERY;
+            MedicalReports savedReport = medicalReportService.saveReport(file, title, description, reportType, mediId);
+            return ResponseEntity.ok(savedReport);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @ApiOperation(value = "Retrieving all medical reports")
     @GetMapping
