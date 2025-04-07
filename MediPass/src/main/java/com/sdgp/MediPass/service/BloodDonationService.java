@@ -15,13 +15,19 @@ public class BloodDonationService {
 
     @Autowired
     private BloodDonationRepository bloodDonationRepository;
-    PatientRepository patientRepository;
+
+    @Autowired
+    private PatientRepository patientRepository;
 
     public BloodDonationRecords saveBDRecords(long mediId,BloodDonationRecords bloodDonationRec){
         Optional<Patient> patient = patientRepository.findByMediId(mediId);
-        bloodDonationRec.setMediId(mediId);
-        bloodDonationRec.setPatient(patient);
-        return bloodDonationRepository.save(bloodDonationRec);
+        if(patient.isPresent()){
+            bloodDonationRec.setMediId(mediId);
+            bloodDonationRec.setPatient(patient.get());
+            return bloodDonationRepository.save(bloodDonationRec);
+        }else{
+            throw new RuntimeException("Patient with MediID: " + mediId + " not found");
+        }
     }
 
     public List<BloodDonationRecords> getAllDonations(long mediId){
