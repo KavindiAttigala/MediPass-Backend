@@ -23,13 +23,15 @@ jobs:
         distribution: 'temurin'
 
     - name: Build with Maven
-      run: cd MediPass-Backend && mvn clean package -DskipTests
-
+      working-directory: MediPass-Backend/MediPass  # This points to the folder where the pom.xml file is
+      run: mvn clean package -DskipTests
+      
     - name: Upload JAR as Artifact
       uses: actions/upload-artifact@v4
       with:
         name: medipass-jar
-        path: MediPass-Backend/target/*.jar
+        path: MediPass/target/*.jar  # Path to the JAR file relative to the repo
+
 
   deploy:
     needs: build
@@ -39,8 +41,9 @@ jobs:
     - name: Download JAR Artifact
       uses: actions/download-artifact@v4
       with:
-        name: medipass-jar
-        path: target/
+        name: medipass-jar  # This should match the name you used for uploading
+        path: target/       # This is where the artifact will be downloaded to
+
 
     - name: Deploy to EC2
       uses: appleboy/scp-action@master
